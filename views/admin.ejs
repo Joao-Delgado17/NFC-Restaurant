@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NFC Restaurante Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@4.12.24/dist/full.min.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <style>
+      :root {
+        color-scheme: light;
+      }
+
+      body {
+        background:
+          radial-gradient(circle at top left, rgba(251, 191, 36, 0.18), transparent 24%),
+          radial-gradient(circle at top right, rgba(249, 115, 22, 0.14), transparent 20%),
+          linear-gradient(135deg, #fff8ed 0%, #fffaf4 48%, #fff3e4 100%);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen text-slate-800">
+    <div class="mx-auto flex min-h-screen max-w-7xl items-center px-4 py-8 sm:px-6 lg:px-8">
+      <% if (!authenticated) { %>
+      <div class="mx-auto w-full max-w-md">
+        <div class="rounded-3xl border border-white/70 bg-white/80 p-8 shadow-2xl shadow-orange-200/40 backdrop-blur">
+          <div class="mb-8">
+            <p class="mb-3 inline-flex rounded-full bg-orange-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-orange-700">
+              Painel Admin
+            </p>
+            <h1 class="text-3xl font-black tracking-tight text-slate-900">NFC Restaurante</h1>
+            <p class="mt-3 text-sm leading-6 text-slate-600">
+              Entra com a password do painel para gerir os redirecionamentos dos teus cards NFC.
+            </p>
+          </div>
+
+          <% if (error) { %>
+          <div class="alert mb-5 border-0 bg-red-50 text-red-700">
+            <span><%= error %></span>
+          </div>
+          <% } %>
+
+          <form action="/admin/login" method="POST" class="space-y-5">
+            <label class="form-control w-full">
+              <div class="label px-0">
+                <span class="label-text font-semibold text-slate-700">Password</span>
+              </div>
+              <input
+                type="password"
+                name="password"
+                placeholder="Introduz a password"
+                class="input input-bordered h-12 w-full border-orange-200 bg-white"
+                required
+              />
+            </label>
+
+            <button class="btn h-12 w-full border-0 bg-slate-900 text-white hover:bg-slate-800">
+              Entrar no painel
+            </button>
+          </form>
+        </div>
+      </div>
+      <% } else { %>
+      <div class="grid w-full gap-6 lg:grid-cols-[1.05fr_1.65fr]">
+        <section class="rounded-3xl border border-white/70 bg-white/80 p-6 shadow-2xl shadow-orange-200/30 backdrop-blur sm:p-8">
+          <div class="mb-6 flex items-start justify-between gap-4">
+            <div>
+              <p class="mb-3 inline-flex rounded-full bg-orange-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-orange-700">
+                Novo Redirect
+              </p>
+              <h1 class="text-3xl font-black tracking-tight text-slate-900">Dashboard NFC</h1>
+              <p class="mt-3 text-sm leading-6 text-slate-600">
+                Cria e mantem os URLs que os teus cartoes NFC vao abrir.
+              </p>
+            </div>
+
+            <form action="/admin/logout" method="POST">
+              <button class="btn btn-ghost btn-sm rounded-full text-slate-500 hover:bg-slate-100">
+                Logout
+              </button>
+            </form>
+          </div>
+
+          <% if (error) { %>
+          <div class="alert mb-5 border-0 bg-red-50 text-red-700">
+            <span><%= error %></span>
+          </div>
+          <% } %>
+
+          <% if (success) { %>
+          <div class="alert mb-5 border-0 bg-emerald-50 text-emerald-700">
+            <span><%= success %></span>
+          </div>
+          <% } %>
+
+          <form action="/admin/links" method="POST" class="space-y-4">
+            <label class="form-control">
+              <div class="label px-0">
+                <span class="label-text font-semibold text-slate-700">Nome do Restaurante</span>
+              </div>
+              <input
+                type="text"
+                name="restaurant_name"
+                value="<%= formData.restaurant_name || '' %>"
+                placeholder="Ex: Tasca do Bairro"
+                class="input input-bordered w-full border-orange-200 bg-white"
+                required
+              />
+            </label>
+
+            <label class="form-control">
+              <div class="label px-0">
+                <span class="label-text font-semibold text-slate-700">Slug</span>
+              </div>
+              <input
+                type="text"
+                name="slug"
+                value="<%= formData.slug || '' %>"
+                placeholder="Ex: tasca-do-bairro"
+                class="input input-bordered w-full border-orange-200 bg-white"
+                required
+              />
+            </label>
+
+            <label class="form-control">
+              <div class="label px-0">
+                <span class="label-text font-semibold text-slate-700">URL de Destino</span>
+              </div>
+              <input
+                type="url"
+                name="destination_url"
+                value="<%= formData.destination_url || '' %>"
+                placeholder="https://..."
+                class="input input-bordered w-full border-orange-200 bg-white"
+                required
+              />
+            </label>
+
+            <button class="btn h-12 w-full border-0 bg-orange-500 text-white hover:bg-orange-600">
+              Criar redirect
+            </button>
+          </form>
+        </section>
+
+        <section class="rounded-3xl border border-white/70 bg-white/80 p-4 shadow-2xl shadow-orange-200/30 backdrop-blur sm:p-6">
+          <div class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Links Ativos</p>
+              <h2 class="mt-2 text-2xl font-black tracking-tight text-slate-900"><%= links.length %> registos</h2>
+            </div>
+            <div class="rounded-2xl bg-slate-900 px-4 py-3 text-sm text-white">
+              Teste rapido: <span class="font-semibold"><%= baseUrl %>/go/teu-slug</span>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white">
+            <table class="table">
+              <thead class="bg-slate-50 text-slate-600">
+                <tr>
+                  <th>Restaurante</th>
+                  <th>Slug</th>
+                  <th>Destino</th>
+                  <th class="text-right">Acoes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% if (!links.length) { %>
+                <tr>
+                  <td colspan="4" class="py-10 text-center text-sm text-slate-500">
+                    Ainda nao existem links. Cria o primeiro redirect no formulario ao lado.
+                  </td>
+                </tr>
+                <% } %>
+
+                <% links.forEach((link) => { %>
+                <tr class="align-top">
+                  <td class="min-w-[220px]">
+                    <form id="update-<%= link.id %>" action="/admin/links/<%= link.id %>/update" method="POST" class="space-y-2">
+                      <input
+                        type="text"
+                        name="restaurant_name"
+                        value="<%= editingId === link.id ? formData.restaurant_name || link.restaurant_name : link.restaurant_name %>"
+                        class="input input-bordered input-sm w-full border-slate-200 bg-white"
+                        required
+                      />
+                    </form>
+                  </td>
+                  <td class="min-w-[180px]">
+                    <input
+                      form="update-<%= link.id %>"
+                      type="text"
+                      name="slug"
+                      value="<%= editingId === link.id ? formData.slug || link.slug : link.slug %>"
+                      class="input input-bordered input-sm w-full border-slate-200 bg-white"
+                      required
+                    />
+                  </td>
+                  <td class="min-w-[280px]">
+                    <input
+                      form="update-<%= link.id %>"
+                      type="url"
+                      name="destination_url"
+                      value="<%= editingId === link.id ? formData.destination_url || link.destination_url : link.destination_url %>"
+                      class="input input-bordered input-sm w-full border-slate-200 bg-white"
+                      required
+                    />
+                    <a
+                      href="/go/<%= link.slug %>"
+                      target="_blank"
+                      rel="noreferrer"
+                      class="mt-2 inline-flex text-xs font-semibold text-orange-600 hover:text-orange-700"
+                    >
+                      Abrir <%= baseUrl %>/go/<%= link.slug %>
+                    </a>
+                  </td>
+                  <td class="w-[180px]">
+                    <div class="flex justify-end gap-2">
+                      <button
+                        form="update-<%= link.id %>"
+                        class="btn btn-sm border-0 bg-slate-900 text-white hover:bg-slate-800"
+                      >
+                        Guardar
+                      </button>
+                      <form action="/admin/links/<%= link.id %>/delete" method="POST">
+                        <button
+                          class="btn btn-sm border-0 bg-red-500 text-white hover:bg-red-600"
+                          onclick="return confirm('Apagar este link?');"
+                        >
+                          Apagar
+                        </button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+      <% } %>
+    </div>
+  </body>
+</html>
