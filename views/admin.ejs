@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>NFC Restaurante Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
     <link
       href="https://cdn.jsdelivr.net/npm/daisyui@4.12.24/dist/full.min.css"
       rel="stylesheet"
@@ -24,9 +25,9 @@
     </style>
   </head>
   <body class="min-h-screen text-slate-800">
-    <div class="mx-auto flex min-h-screen max-w-7xl items-center px-4 py-8 sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <% if (!authenticated) { %>
-      <div class="mx-auto w-full max-w-md">
+      <div class="mx-auto mt-10 w-full max-w-md">
         <div class="rounded-3xl border border-white/70 bg-white/80 p-8 shadow-2xl shadow-orange-200/40 backdrop-blur">
           <div class="mb-8">
             <p class="mb-3 inline-flex rounded-full bg-orange-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-orange-700">
@@ -34,7 +35,7 @@
             </p>
             <h1 class="text-3xl font-black tracking-tight text-slate-900">NFC Restaurante</h1>
             <p class="mt-3 text-sm leading-6 text-slate-600">
-              Entra com a password do painel para gerir os redirecionamentos dos teus cards NFC.
+              Entra com a password do painel para gerir restaurantes, cartoes NFC e estatisticas diarias.
             </p>
           </div>
 
@@ -65,37 +66,80 @@
         </div>
       </div>
       <% } else { %>
-      <div class="grid w-full gap-6 lg:grid-cols-[1.05fr_1.65fr]">
-        <section class="rounded-3xl border border-white/70 bg-white/80 p-6 shadow-2xl shadow-orange-200/30 backdrop-blur sm:p-8">
-          <div class="mb-6 flex items-start justify-between gap-4">
-            <div>
-              <p class="mb-3 inline-flex rounded-full bg-orange-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-orange-700">
-                Novo Redirect
-              </p>
-              <h1 class="text-3xl font-black tracking-tight text-slate-900">Dashboard NFC</h1>
-              <p class="mt-3 text-sm leading-6 text-slate-600">
-                Cria e mantem os URLs que os teus cartoes NFC vao abrir.
-              </p>
-            </div>
+      <div class="mb-6 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+        <div>
+          <p class="mb-3 inline-flex rounded-full bg-orange-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-orange-700">
+            Dashboard Analytics
+          </p>
+          <h1 class="text-4xl font-black tracking-tight text-slate-900">NFC Restaurante</h1>
+          <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-600">
+            Cada cartao passa a ter um token proprio, e o sistema guarda historico diario por restaurante e por cartao sem criar uma linha por cada abertura.
+          </p>
+        </div>
 
-            <form action="/admin/logout" method="POST">
-              <button class="btn btn-ghost btn-sm rounded-full text-slate-500 hover:bg-slate-100">
-                Logout
-              </button>
-            </form>
+        <div class="flex items-center gap-3">
+          <div class="rounded-2xl bg-slate-900 px-4 py-3 text-sm text-white">
+            Link base: <span class="font-semibold"><%= baseUrl %>/go/teu-slug?card=token</span>
           </div>
+          <form action="/admin/logout" method="POST">
+            <button class="btn rounded-full border-0 bg-white text-slate-600 shadow hover:bg-slate-50">
+              Logout
+            </button>
+          </form>
+        </div>
+      </div>
 
-          <% if (error) { %>
-          <div class="alert mb-5 border-0 bg-red-50 text-red-700">
-            <span><%= error %></span>
-          </div>
-          <% } %>
+      <% if (error) { %>
+      <div class="alert mb-5 border-0 bg-red-50 text-red-700">
+        <span><%= error %></span>
+      </div>
+      <% } %>
 
-          <% if (success) { %>
-          <div class="alert mb-5 border-0 bg-emerald-50 text-emerald-700">
-            <span><%= success %></span>
+      <% if (success) { %>
+      <div class="alert mb-5 border-0 bg-emerald-50 text-emerald-700">
+        <span><%= success %></span>
+      </div>
+      <% } %>
+
+      <section class="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+        <div class="rounded-3xl border border-white/70 bg-white/85 p-5 shadow-xl shadow-orange-100/40">
+          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">Restaurantes</p>
+          <p class="mt-3 text-4xl font-black text-slate-900"><%= overview.totalLinks %></p>
+          <p class="mt-2 text-sm text-slate-500">Links ativos</p>
+        </div>
+        <div class="rounded-3xl border border-white/70 bg-white/85 p-5 shadow-xl shadow-orange-100/40">
+          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">Cartoes Totais</p>
+          <p class="mt-3 text-4xl font-black text-slate-900"><%= overview.totalCards %></p>
+          <p class="mt-2 text-sm text-slate-500">Cartoes registados</p>
+        </div>
+        <div class="rounded-3xl border border-white/70 bg-white/85 p-5 shadow-xl shadow-orange-100/40">
+          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">Cartoes Ativos</p>
+          <p class="mt-3 text-4xl font-black text-slate-900"><%= overview.totalActiveCards %></p>
+          <p class="mt-2 text-sm text-slate-500">Prontos para uso</p>
+        </div>
+        <div class="rounded-3xl border border-white/70 bg-white/85 p-5 shadow-xl shadow-orange-100/40">
+          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">Aberturas Hoje</p>
+          <p class="mt-3 text-4xl font-black text-slate-900"><%= overview.totalOpensToday %></p>
+          <p class="mt-2 text-sm text-slate-500">Em todos os restaurantes</p>
+        </div>
+        <div class="rounded-3xl border border-white/70 bg-white/85 p-5 shadow-xl shadow-orange-100/40">
+          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">Ultimos 7 Dias</p>
+          <p class="mt-3 text-4xl font-black text-slate-900"><%= overview.totalOpensLast7Days %></p>
+          <p class="mt-2 text-sm text-slate-500">Total agregado</p>
+        </div>
+      </section>
+
+      <div class="grid gap-6 xl:grid-cols-[1fr_1.5fr]">
+        <section class="rounded-3xl border border-white/70 bg-white/85 p-6 shadow-2xl shadow-orange-200/30 backdrop-blur">
+          <div class="mb-6">
+            <p class="mb-3 inline-flex rounded-full bg-orange-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-orange-700">
+              Novo Restaurante
+            </p>
+            <h2 class="text-2xl font-black tracking-tight text-slate-900">Criar redirect</h2>
+            <p class="mt-2 text-sm leading-6 text-slate-600">
+              Cria o restaurante base. Os cartoes individuais ficam logo abaixo quando selecionares esse restaurante.
+            </p>
           </div>
-          <% } %>
 
           <form action="/admin/links" method="POST" class="space-y-4">
             <label class="form-control">
@@ -106,7 +150,7 @@
                 type="text"
                 name="restaurant_name"
                 value="<%= formData.restaurant_name || '' %>"
-                placeholder="Ex: Tasca do Bairro"
+                placeholder="Ex: Soft Lounge"
                 class="input input-bordered w-full border-orange-200 bg-white"
                 required
               />
@@ -120,7 +164,7 @@
                 type="text"
                 name="slug"
                 value="<%= formData.slug || '' %>"
-                placeholder="Ex: tasca-do-bairro"
+                placeholder="Ex: soft-lounge"
                 class="input input-bordered w-full border-orange-200 bg-white"
                 required
               />
@@ -141,107 +185,418 @@
             </label>
 
             <button class="btn h-12 w-full border-0 bg-orange-500 text-white hover:bg-orange-600">
-              Criar redirect
+              Criar restaurante
             </button>
           </form>
         </section>
 
-        <section class="rounded-3xl border border-white/70 bg-white/80 p-4 shadow-2xl shadow-orange-200/30 backdrop-blur sm:p-6">
-          <div class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <section id="restaurant-history" class="rounded-3xl border border-white/70 bg-white/85 p-6 shadow-2xl shadow-orange-200/30 backdrop-blur">
+          <div class="mb-5 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Links Ativos</p>
-              <h2 class="mt-2 text-2xl font-black tracking-tight text-slate-900"><%= links.length %> registos</h2>
+              <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Historico do Restaurante</p>
+              <h2 class="mt-2 text-2xl font-black tracking-tight text-slate-900">
+                <%= selectedLink ? selectedLink.restaurant_name : 'Seleciona um restaurante' %>
+              </h2>
+              <p class="mt-2 text-sm text-slate-500">
+                Totais diarios do restaurante nos ultimos <%= selectedLinkHistory.labels.length || 0 %> dias.
+              </p>
             </div>
+            <% if (selectedLink) { %>
             <div class="rounded-2xl bg-slate-900 px-4 py-3 text-sm text-white">
-              Teste rapido: <span class="font-semibold"><%= baseUrl %>/go/teu-slug</span>
+              Link publico: <span class="font-semibold"><%= baseUrl %>/go/<%= selectedLink.slug %></span>
             </div>
+            <% } %>
           </div>
 
-          <div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white">
-            <table class="table">
-              <thead class="bg-slate-50 text-slate-600">
-                <tr>
-                  <th>Restaurante</th>
-                  <th>Slug</th>
-                  <th>Destino</th>
-                  <th class="text-right">Acoes</th>
-                </tr>
-              </thead>
-              <tbody>
-                <% if (!links.length) { %>
-                <tr>
-                  <td colspan="4" class="py-10 text-center text-sm text-slate-500">
-                    Ainda nao existem links. Cria o primeiro redirect no formulario ao lado.
-                  </td>
-                </tr>
-                <% } %>
+          <div class="rounded-3xl border border-slate-200 bg-white p-4">
+            <canvas id="restaurantHistoryChart" height="120"></canvas>
+          </div>
+        </section>
+      </div>
 
-                <% links.forEach((link) => { %>
-                <tr class="align-top">
-                  <td class="min-w-[220px]">
-                    <form id="update-<%= link.id %>" action="/admin/links/<%= link.id %>/update" method="POST" class="space-y-2">
-                      <input
-                        type="text"
-                        name="restaurant_name"
-                        value="<%= editingId === link.id ? formData.restaurant_name || link.restaurant_name : link.restaurant_name %>"
-                        class="input input-bordered input-sm w-full border-slate-200 bg-white"
-                        required
-                      />
-                    </form>
-                  </td>
-                  <td class="min-w-[180px]">
+      <section class="mt-6 rounded-3xl border border-white/70 bg-white/85 p-4 shadow-2xl shadow-orange-200/30 backdrop-blur sm:p-6">
+        <div class="mb-5">
+          <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Restaurantes</p>
+          <h2 class="mt-2 text-2xl font-black tracking-tight text-slate-900">Dashboard por restaurante</h2>
+        </div>
+
+        <div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white">
+          <table class="table">
+            <thead class="bg-slate-50 text-slate-600">
+              <tr>
+                <th>Restaurante</th>
+                <th>Slug</th>
+                <th>Cartoes Ativos</th>
+                <th>Hoje</th>
+                <th>7 Dias</th>
+                <th>Destino</th>
+                <th class="text-right">Acoes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (!links.length) { %>
+              <tr>
+                <td colspan="7" class="py-10 text-center text-sm text-slate-500">
+                  Ainda nao existem restaurantes. Cria o primeiro no formulario acima.
+                </td>
+              </tr>
+              <% } %>
+
+              <% links.forEach((link) => { %>
+              <tr class="align-top">
+                <td class="min-w-[220px]">
+                  <form id="update-link-<%= link.id %>" action="/admin/links/<%= link.id %>/update" method="POST" class="space-y-2">
                     <input
-                      form="update-<%= link.id %>"
                       type="text"
-                      name="slug"
-                      value="<%= editingId === link.id ? formData.slug || link.slug : link.slug %>"
-                      class="input input-bordered input-sm w-full border-slate-200 bg-white"
-                      required
-                    />
-                  </td>
-                  <td class="min-w-[280px]">
-                    <input
-                      form="update-<%= link.id %>"
-                      type="url"
-                      name="destination_url"
-                      value="<%= editingId === link.id ? formData.destination_url || link.destination_url : link.destination_url %>"
+                      name="restaurant_name"
+                      value="<%= editingId === link.id ? formData.restaurant_name || link.restaurant_name : link.restaurant_name %>"
                       class="input input-bordered input-sm w-full border-slate-200 bg-white"
                       required
                     />
                     <a
+                      href="/admin?link=<%= link.id %>#restaurant-history"
+                      class="inline-flex text-xs font-semibold text-orange-600 hover:text-orange-700"
+                    >
+                      Ver dashboard
+                    </a>
+                  </form>
+                </td>
+                <td class="min-w-[180px]">
+                  <input
+                    form="update-link-<%= link.id %>"
+                    type="text"
+                    name="slug"
+                    value="<%= editingId === link.id ? formData.slug || link.slug : link.slug %>"
+                    class="input input-bordered input-sm w-full border-slate-200 bg-white"
+                    required
+                  />
+                </td>
+                <td class="text-sm font-semibold text-slate-700"><%= link.card_count %></td>
+                <td class="text-sm font-semibold text-slate-700"><%= link.opens_today %></td>
+                <td class="text-sm font-semibold text-slate-700"><%= link.opens_last_7_days %></td>
+                <td class="min-w-[300px]">
+                  <input
+                    form="update-link-<%= link.id %>"
+                    type="url"
+                    name="destination_url"
+                    value="<%= editingId === link.id ? formData.destination_url || link.destination_url : link.destination_url %>"
+                    class="input input-bordered input-sm w-full border-slate-200 bg-white"
+                    required
+                  />
+                  <div class="mt-2 flex flex-col gap-1">
+                    <a
                       href="/go/<%= link.slug %>"
                       target="_blank"
                       rel="noreferrer"
-                      class="mt-2 inline-flex text-xs font-semibold text-orange-600 hover:text-orange-700"
+                      class="inline-flex text-xs font-semibold text-orange-600 hover:text-orange-700"
                     >
                       Abrir <%= baseUrl %>/go/<%= link.slug %>
                     </a>
-                  </td>
-                  <td class="w-[180px]">
-                    <div class="flex justify-end gap-2">
+                    <span class="text-xs text-slate-400">14 dias: <%= link.opens_last_14_days %> aberturas</span>
+                  </div>
+                </td>
+                <td class="w-[220px]">
+                  <div class="flex justify-end gap-2">
+                    <button
+                      form="update-link-<%= link.id %>"
+                      class="btn btn-sm border-0 bg-slate-900 text-white hover:bg-slate-800"
+                    >
+                      Guardar
+                    </button>
+                    <form action="/admin/links/<%= link.id %>/delete" method="POST">
                       <button
-                        form="update-<%= link.id %>"
-                        class="btn btn-sm border-0 bg-slate-900 text-white hover:bg-slate-800"
+                        class="btn btn-sm border-0 bg-red-500 text-white hover:bg-red-600"
+                        onclick="return confirm('Apagar este restaurante, cartoes e estatisticas?');"
                       >
-                        Guardar
+                        Apagar
                       </button>
-                      <form action="/admin/links/<%= link.id %>/delete" method="POST">
-                        <button
-                          class="btn btn-sm border-0 bg-red-500 text-white hover:bg-red-600"
-                          onclick="return confirm('Apagar este link?');"
-                        >
-                          Apagar
-                        </button>
-                      </form>
-                    </div>
-                  </td>
-                </tr>
-                <% }) %>
-              </tbody>
-            </table>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="cards" class="mt-6 grid gap-6 xl:grid-cols-[1fr_1.35fr]">
+        <div class="rounded-3xl border border-white/70 bg-white/85 p-6 shadow-2xl shadow-orange-200/30 backdrop-blur">
+          <div class="mb-6">
+            <p class="mb-3 inline-flex rounded-full bg-orange-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-orange-700">
+              Cartoes NFC
+            </p>
+            <h2 class="text-2xl font-black tracking-tight text-slate-900">
+              <%= selectedLink ? `Novo cartao para ${selectedLink.restaurant_name}` : 'Seleciona um restaurante' %>
+            </h2>
+            <p class="mt-2 text-sm leading-6 text-slate-600">
+              Cada cartao tem um token unico. E esse token vai no link do NFC para conseguires ver estatisticas reais por cartao.
+            </p>
           </div>
-        </section>
-      </div>
+
+          <% if (selectedLink) { %>
+          <form action="/admin/links/<%= selectedLink.id %>/cards" method="POST" class="space-y-4">
+            <label class="form-control">
+              <div class="label px-0">
+                <span class="label-text font-semibold text-slate-700">Etiqueta do Cartao</span>
+              </div>
+              <input
+                type="text"
+                name="label"
+                value="<%= cardFormData.label || '' %>"
+                placeholder="Ex: Mesa 01"
+                class="input input-bordered w-full border-orange-200 bg-white"
+              />
+            </label>
+
+            <label class="form-control">
+              <div class="label px-0">
+                <span class="label-text font-semibold text-slate-700">Token Publico</span>
+              </div>
+              <input
+                type="text"
+                name="public_token"
+                value="<%= cardFormData.public_token || '' %>"
+                placeholder="Ex: soft-mesa-01"
+                class="input input-bordered w-full border-orange-200 bg-white"
+              />
+              <div class="label px-0">
+                <span class="label-text-alt text-slate-500">Se deixares vazio, o sistema gera um token automaticamente.</span>
+              </div>
+            </label>
+
+            <label class="form-control">
+              <div class="label px-0">
+                <span class="label-text font-semibold text-slate-700">Estado</span>
+              </div>
+              <select name="is_active" class="select select-bordered border-orange-200 bg-white">
+                <option value="true" <%= cardFormData.is_active === false ? '' : 'selected' %>>Ativo</option>
+                <option value="false" <%= cardFormData.is_active === false ? 'selected' : '' %>>Inativo</option>
+              </select>
+            </label>
+
+            <button class="btn h-12 w-full border-0 bg-orange-500 text-white hover:bg-orange-600">
+              Criar cartao
+            </button>
+          </form>
+          <% } else { %>
+          <div class="rounded-2xl border border-dashed border-slate-300 bg-white/80 p-6 text-sm text-slate-500">
+            Cria ou seleciona um restaurante para começares a associar cartoes NFC.
+          </div>
+          <% } %>
+        </div>
+
+        <div id="card-history" class="rounded-3xl border border-white/70 bg-white/85 p-6 shadow-2xl shadow-orange-200/30 backdrop-blur">
+          <div class="mb-5 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Historico do Cartao</p>
+              <h2 class="mt-2 text-2xl font-black tracking-tight text-slate-900">
+                <%= selectedCard ? (selectedCard.label || selectedCard.public_token) : 'Seleciona um cartao' %>
+              </h2>
+              <p class="mt-2 text-sm text-slate-500">
+                Cada ponto mostra as aberturas diarias daquele cartao especifico.
+              </p>
+            </div>
+            <% if (selectedLink && selectedCard) { %>
+            <div class="rounded-2xl bg-slate-900 px-4 py-3 text-sm text-white">
+              NFC URL: <span class="font-semibold"><%= baseUrl %>/go/<%= selectedLink.slug %>?card=<%= selectedCard.public_token %></span>
+            </div>
+            <% } %>
+          </div>
+
+          <div class="rounded-3xl border border-slate-200 bg-white p-4">
+            <canvas id="cardHistoryChart" height="120"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <section class="mt-6 rounded-3xl border border-white/70 bg-white/85 p-4 shadow-2xl shadow-orange-200/30 backdrop-blur sm:p-6">
+        <div class="mb-5">
+          <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Cartoes do Restaurante</p>
+          <h2 class="mt-2 text-2xl font-black tracking-tight text-slate-900">
+            <%= selectedLink ? selectedLink.restaurant_name : 'Seleciona um restaurante' %>
+          </h2>
+        </div>
+
+        <div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white">
+          <table class="table">
+            <thead class="bg-slate-50 text-slate-600">
+              <tr>
+                <th>Etiqueta</th>
+                <th>Token</th>
+                <th>Estado</th>
+                <th>Hoje</th>
+                <th>7 Dias</th>
+                <th>Link do NFC</th>
+                <th class="text-right">Acoes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (!cards.length) { %>
+              <tr>
+                <td colspan="7" class="py-10 text-center text-sm text-slate-500">
+                  Ainda nao existem cartoes para este restaurante.
+                </td>
+              </tr>
+              <% } %>
+
+              <% cards.forEach((card) => { %>
+              <tr class="align-top">
+                <td class="min-w-[180px]">
+                  <form id="update-card-<%= card.id %>" action="/admin/cards/<%= card.id %>/update" method="POST" class="space-y-2">
+                    <input type="hidden" name="link_id" value="<%= selectedLink ? selectedLink.id : '' %>" />
+                    <input
+                      type="text"
+                      name="label"
+                      value="<%= editingCardId === card.id ? cardFormData.label || card.label : card.label || '' %>"
+                      placeholder="Ex: Mesa 01"
+                      class="input input-bordered input-sm w-full border-slate-200 bg-white"
+                    />
+                    <a
+                      href="/admin?link=<%= selectedLink ? selectedLink.id : '' %>&card=<%= card.id %>#card-history"
+                      class="inline-flex text-xs font-semibold text-orange-600 hover:text-orange-700"
+                    >
+                      Ver stats
+                    </a>
+                  </form>
+                </td>
+                <td class="min-w-[180px]">
+                  <input
+                    form="update-card-<%= card.id %>"
+                    type="text"
+                    name="public_token"
+                    value="<%= editingCardId === card.id ? cardFormData.public_token || card.public_token : card.public_token %>"
+                    class="input input-bordered input-sm w-full border-slate-200 bg-white"
+                    required
+                  />
+                </td>
+                <td class="min-w-[130px]">
+                  <select
+                    form="update-card-<%= card.id %>"
+                    name="is_active"
+                    class="select select-bordered select-sm w-full border-slate-200 bg-white"
+                  >
+                    <option value="true" <%= (editingCardId === card.id ? cardFormData.is_active : card.is_active) ? 'selected' : '' %>>Ativo</option>
+                    <option value="false" <%= (editingCardId === card.id ? cardFormData.is_active : card.is_active) ? '' : 'selected' %>>Inativo</option>
+                  </select>
+                </td>
+                <td class="text-sm font-semibold text-slate-700"><%= card.opens_today %></td>
+                <td class="text-sm font-semibold text-slate-700"><%= card.opens_last_7_days %></td>
+                <td class="min-w-[320px]">
+                  <% if (selectedLink) { %>
+                  <a
+                    href="/go/<%= selectedLink.slug %>?card=<%= card.public_token %>"
+                    target="_blank"
+                    rel="noreferrer"
+                    class="inline-flex text-xs font-semibold text-orange-600 hover:text-orange-700"
+                  >
+                    <%= baseUrl %>/go/<%= selectedLink.slug %>?card=<%= card.public_token %>
+                  </a>
+                  <div class="mt-2 text-xs text-slate-400">14 dias: <%= card.opens_last_14_days %> aberturas</div>
+                  <% } %>
+                </td>
+                <td class="w-[220px]">
+                  <div class="flex justify-end gap-2">
+                    <button
+                      form="update-card-<%= card.id %>"
+                      class="btn btn-sm border-0 bg-slate-900 text-white hover:bg-slate-800"
+                    >
+                      Guardar
+                    </button>
+                    <form action="/admin/cards/<%= card.id %>/delete" method="POST">
+                      <input type="hidden" name="link_id" value="<%= selectedLink ? selectedLink.id : '' %>" />
+                      <button
+                        class="btn btn-sm border-0 bg-red-500 text-white hover:bg-red-600"
+                        onclick="return confirm('Apagar este cartao e as estatisticas dele?');"
+                      >
+                        Apagar
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <script>
+        const restaurantHistoryLabels = <%- JSON.stringify(selectedLinkHistory.labels || []) %>;
+        const restaurantHistoryValues = <%- JSON.stringify(selectedLinkHistory.values || []) %>;
+        const cardHistoryLabels = <%- JSON.stringify(selectedCardHistory.labels || []) %>;
+        const cardHistoryValues = <%- JSON.stringify(selectedCardHistory.values || []) %>;
+        const selectedRestaurantName = <%- JSON.stringify(selectedLink ? selectedLink.restaurant_name : 'Restaurante') %>;
+        const selectedCardName = <%- JSON.stringify(selectedCard ? (selectedCard.label || selectedCard.public_token) : 'Cartao') %>;
+
+        function renderHistoryChart(elementId, labels, values, datasetLabel, color) {
+          const chartCanvas = document.getElementById(elementId);
+
+          if (!chartCanvas || !labels.length) {
+            return;
+          }
+
+          new Chart(chartCanvas, {
+            type: 'line',
+            data: {
+              labels,
+              datasets: [
+                {
+                  label: datasetLabel,
+                  data: values,
+                  borderColor: color,
+                  backgroundColor: color === '#f97316' ? 'rgba(249, 115, 22, 0.18)' : 'rgba(15, 23, 42, 0.16)',
+                  fill: true,
+                  tension: 0.32,
+                  pointRadius: 3,
+                  pointHoverRadius: 4
+                }
+              ]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  ticks: {
+                    precision: 0
+                  },
+                  grid: {
+                    color: 'rgba(148, 163, 184, 0.18)'
+                  }
+                },
+                x: {
+                  grid: {
+                    display: false
+                  }
+                }
+              },
+              plugins: {
+                legend: {
+                  display: true
+                }
+              }
+            }
+          });
+        }
+
+        renderHistoryChart(
+          'restaurantHistoryChart',
+          restaurantHistoryLabels,
+          restaurantHistoryValues,
+          `Aberturas - ${selectedRestaurantName}`,
+          '#f97316'
+        );
+
+        renderHistoryChart(
+          'cardHistoryChart',
+          cardHistoryLabels,
+          cardHistoryValues,
+          `Aberturas - ${selectedCardName}`,
+          '#0f172a'
+        );
+      </script>
       <% } %>
     </div>
   </body>
