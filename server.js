@@ -86,6 +86,33 @@ function normalizeToken(value = '') {
     .replace(/[^a-z0-9-_]/g, '');
 }
 
+function escapeRegExp(value = '') {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function generateCardDefaults(restaurantName, index) {
+  const baseLabel = restaurantName.trim() || 'Cartao';
+  const label = `${baseLabel} ${index}`;
+  return {
+    label,
+    public_token: normalizeToken(label)
+  };
+}
+
+function getNextCardIndex(existingTokens, baseSlug) {
+  let highestIndex = 0;
+  const regex = new RegExp(`^${escapeRegExp(baseSlug)}-(\\d+)$`);
+
+  for (const token of existingTokens || []) {
+    const match = token.match(regex);
+    if (match && match[1]) {
+      highestIndex = Math.max(highestIndex, Number(match[1]));
+    }
+  }
+
+  return highestIndex + 1;
+}
+
 function normalizeBoolean(value = '') {
   return value === 'true' || value === 'on' || value === '1';
 }
@@ -543,41 +570,76 @@ app.post('/admin/links/:id/delete', requireAdmin, async (req, res) => {
 
 app.post('/admin/links/:id/cards', requireAdmin, async (req, res) => {
   const linkId = req.params.id;
+  const quantity = Math.max(1, Math.min(50, Number(normalizeInput(req.body.quantity || '1')) || 1));
   const label = normalizeInput(req.body.label || '');
-  const public_token = normalizeToken(req.body.public_token || label || generateCardToken());
+  const public_token = normalizeToken(req.body.public_token || '');
   const is_active = normalizeBoolean(req.body.is_active || 'true');
 
-  if (!public_token) {
-    return renderAdminWithData(req, res.status(400), {
-      selectedLinkId: linkId,
-      error: 'O token publico do cartao nao pode ficar vazio.',
-      cardFormData: { label, public_token, is_active }
-    });
-  }
-
   try {
-    const { data: createdCard, error } = await supabase
-      .from('cards')
-      .insert({
+    const { data: link, error: linkError } = await supabase
+      .from('links')
+      .select('restaurant_name')
+      .eq('id', linkId)
+      .maybeSingle();
+
+    if (linkError) {
+      throw linkError;
+    }
+
+    const restaurantName = link?.restaurant_name || 'Cartao';
+    const cardsToInsert = [];
+    const baseSlug = normalizeToken(restaurantName);
+
+    if (quantity > 1) {
+      const { data: existingCards, error: existingError } = await supabase
+        .from('cards')
+        .select('public_token')
+        .eq('link_id', linkId);
+
+      if (existingError) {
+        throw existingError;
+      }
+
+      let nextIndex = getNextCardIndex((existingCards || []).map((card) => card.public_token), baseSlug);
+
+      for (let i = 0; i < quantity; i += 1) {
+        const defaults = generateCardDefaults(restaurantName, nextIndex + i);
+        cardsToInsert.push({
+          link_id: linkId,
+          label: defaults.label,
+          public_token: defaults.public_token,
+          is_active
+        });
+      }
+    } else {
+      const defaults = generateCardDefaults(restaurantName, 1);
+      cardsToInsert.push({
         link_id: linkId,
-        label,
-        public_token,
+        label: label || defaults.label,
+        public_token: public_token || normalizeToken(label || defaults.label),
         is_active
-      })
-      .select('id')
-      .single();
+      });
+    }
+
+    const { data: createdCards, error } = await supabase
+      .from('cards')
+      .insert(cardsToInsert)
+      .select('id');
 
     if (error) {
       throw error;
     }
 
-    return res.redirect(`/admin?link=${linkId}&card=${createdCard.id}`);
+    return renderAdminWithData(req, res, {
+      selectedLinkId: linkId,
+      success: quantity > 1 ? `Criados ${createdCards.length} cartoes automaticamente.` : 'Cartao criado com sucesso.'
+    });
   } catch (error) {
     console.error('Create card error:', error);
     return renderAdminWithData(req, res.status(400), {
       selectedLinkId: linkId,
       error: error.message || 'Nao foi possivel criar o cartao.',
-      cardFormData: { label, public_token, is_active }
+      cardFormData: { label, public_token, is_active, quantity }
     });
   }
 });

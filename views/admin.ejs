@@ -338,30 +338,47 @@
           <form action="/admin/links/<%= selectedLink.id %>/cards" method="POST" class="space-y-4">
             <label class="form-control">
               <div class="label px-0">
-                <span class="label-text font-semibold text-slate-700">Etiqueta do Cartao</span>
+                <span class="label-text font-semibold text-slate-700">Quantidade de cartoes</span>
+              </div>
+              <input
+                type="number"
+                name="quantity"
+                min="1"
+                max="50"
+                value="<%= cardFormData.quantity || 1 %>"
+                class="input input-bordered w-full border-orange-200 bg-white"
+              />
+              <div class="label px-0">
+                <span class="label-text-alt text-slate-500">O sistema gera etiquetas e tokens automaticamente como "<%= selectedLink.restaurant_name %> 1" e "<%= selectedLink.restaurant_name.toLowerCase().replace(/\s+/g, '-') %>-1".</span>
+              </div>
+            </label>
+
+            <label class="form-control">
+              <div class="label px-0">
+                <span class="label-text font-semibold text-slate-700">Etiqueta opcional (1 cartao)</span>
               </div>
               <input
                 type="text"
                 name="label"
                 value="<%= cardFormData.label || '' %>"
-                placeholder="Ex: Mesa 01"
+                placeholder="Opcional: Ex. Mesa 01"
                 class="input input-bordered w-full border-orange-200 bg-white"
               />
             </label>
 
             <label class="form-control">
               <div class="label px-0">
-                <span class="label-text font-semibold text-slate-700">Token Publico</span>
+                <span class="label-text font-semibold text-slate-700">Token opcional (1 cartao)</span>
               </div>
               <input
                 type="text"
                 name="public_token"
                 value="<%= cardFormData.public_token || '' %>"
-                placeholder="Ex: soft-mesa-01"
+                placeholder="Opcional: Ex. soft-mesa-01"
                 class="input input-bordered w-full border-orange-200 bg-white"
               />
               <div class="label px-0">
-                <span class="label-text-alt text-slate-500">Se deixares vazio, o sistema gera um token automaticamente.</span>
+                <span class="label-text-alt text-slate-500">Se deixares vazio, será gerado automaticamente para um único cartao.</span>
               </div>
             </label>
 
@@ -376,7 +393,7 @@
             </label>
 
             <button class="btn h-12 w-full border-0 bg-orange-500 text-white hover:bg-orange-600">
-              Criar cartao
+              Criar cartoes
             </button>
           </form>
           <% } else { %>
