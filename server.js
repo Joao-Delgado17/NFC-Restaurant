@@ -145,6 +145,16 @@ function getDateDaysAgo(daysAgo) {
   return date;
 }
 
+function getRestaurantStatus(opensToday, opensLast7Days) {
+  if (opensToday > 0) {
+    return { status: 'active', label: 'Ativo agora', color: 'emerald' };
+  }
+  if (opensLast7Days > 0) {
+    return { status: 'paused', label: 'Pausa', color: 'amber' };
+  }
+  return { status: 'offline', label: 'Sem atividade', color: 'slate' };
+}
+
 function buildHistorySeries(rows, keyField, targetId) {
   const map = new Map(
     rows
@@ -247,14 +257,20 @@ async function loadAdminData(selectedLinkId, selectedCardId) {
   const linksWithMetrics = (links || []).map((link) => {
     const restaurantCards = cardsByLinkId[link.id] || [];
     const activeCards = restaurantCards.filter((card) => card.is_active);
+    const opensToday = linkMetricMap[link.id]?.opensToday || 0;
+    const opensLast7Days = linkMetricMap[link.id]?.opensLast7Days || 0;
+    const statusInfo = getRestaurantStatus(opensToday, opensLast7Days);
 
     return {
       ...link,
       card_count: activeCards.length,
       total_cards: restaurantCards.length,
-      opens_today: linkMetricMap[link.id]?.opensToday || 0,
-      opens_last_7_days: linkMetricMap[link.id]?.opensLast7Days || 0,
-      opens_last_14_days: linkMetricMap[link.id]?.opensLast14Days || 0
+      opens_today: opensToday,
+      opens_last_7_days: opensLast7Days,
+      opens_last_14_days: linkMetricMap[link.id]?.opensLast14Days || 0,
+      status: statusInfo.status,
+      status_label: statusInfo.label,
+      status_color: statusInfo.color
     };
   });
 

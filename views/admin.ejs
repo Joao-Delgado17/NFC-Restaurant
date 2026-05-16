@@ -13,34 +13,58 @@
     />
     <style>
       :root {
-        color-scheme: light;
+        color-scheme: dark;
       }
 
       body {
-        background:
-          radial-gradient(circle at top left, rgba(251, 191, 36, 0.18), transparent 24%),
-          radial-gradient(circle at top right, rgba(249, 115, 22, 0.14), transparent 20%),
-          linear-gradient(135deg, #fff8ed 0%, #fffaf4 48%, #fff3e4 100%);
+        background: linear-gradient(135deg, #0f172a 0%, #1a1f3a 50%, #0d2d2d 100%);
+      }
+
+      .status-active {
+        background: rgba(16, 185, 129, 0.1);
+        border-color: #10b981;
+      }
+
+      .status-paused {
+        background: rgba(217, 119, 6, 0.1);
+        border-color: #d97706;
+      }
+
+      .status-offline {
+        background: rgba(100, 116, 139, 0.1);
+        border-color: #64748b;
+      }
+
+      .dot-active {
+        background-color: #10b981;
+      }
+
+      .dot-paused {
+        background-color: #d97706;
+      }
+
+      .dot-offline {
+        background-color: #64748b;
       }
     </style>
   </head>
-  <body class="min-h-screen text-slate-800">
+  <body class="min-h-screen text-slate-100">
     <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <% if (!authenticated) { %>
       <div class="mx-auto mt-10 w-full max-w-md">
-        <div class="rounded-3xl border border-white/70 bg-white/80 p-8 shadow-2xl shadow-orange-200/40 backdrop-blur">
+        <div class="rounded-2xl border border-teal-900/30 bg-slate-900/80 p-8 shadow-2xl backdrop-blur">
           <div class="mb-8">
-            <p class="mb-3 inline-flex rounded-full bg-orange-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-orange-700">
+            <p class="mb-3 inline-flex rounded-full bg-teal-500/20 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-teal-300">
               Painel Admin
             </p>
-            <h1 class="text-3xl font-black tracking-tight text-slate-900">NFC Restaurante</h1>
-            <p class="mt-3 text-sm leading-6 text-slate-600">
-              Entra com a password do painel para gerir restaurantes, cartoes NFC e estatisticas diarias.
+            <h1 class="text-3xl font-black tracking-tight text-white">NFC Restaurante</h1>
+            <p class="mt-3 text-sm leading-6 text-slate-400">
+              Entra com a password para gerir restaurantes, cartões e estatísticas.
             </p>
           </div>
 
           <% if (error) { %>
-          <div class="alert mb-5 border-0 bg-red-50 text-red-700">
+          <div class="alert mb-5 border-0 border-l-4 border-red-500 bg-red-500/20 text-red-200">
             <span><%= error %></span>
           </div>
           <% } %>
@@ -48,41 +72,41 @@
           <form action="/admin/login" method="POST" class="space-y-5">
             <label class="form-control w-full">
               <div class="label px-0">
-                <span class="label-text font-semibold text-slate-700">Password</span>
+                <span class="label-text font-semibold text-slate-300">Password</span>
               </div>
               <input
                 type="password"
                 name="password"
                 placeholder="Introduz a password"
-                class="input input-bordered h-12 w-full border-orange-200 bg-white"
+                class="input input-bordered h-12 w-full border-slate-700 bg-slate-800 text-white placeholder-slate-500"
                 required
               />
             </label>
 
-            <button class="btn h-12 w-full border-0 bg-slate-900 text-white hover:bg-slate-800">
+            <button class="btn h-12 w-full border-0 bg-teal-600 text-white hover:bg-teal-700">
               Entrar no painel
             </button>
           </form>
         </div>
       </div>
       <% } else { %>
-      <div class="mb-6 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+      <div class="mb-8 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <p class="mb-3 inline-flex rounded-full bg-orange-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-orange-700">
+          <p class="mb-3 inline-flex rounded-full bg-teal-500/20 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-teal-300">
             Dashboard Analytics
           </p>
-          <h1 class="text-4xl font-black tracking-tight text-slate-900">NFC Restaurante</h1>
-          <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-600">
-            Cada cartao passa a ter um token proprio, e o sistema guarda historico diario por restaurante e por cartao sem criar uma linha por cada abertura.
+          <h1 class="text-4xl font-black tracking-tight text-white">NFC Restaurante</h1>
+          <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-400">
+            Visualiza o status em tempo real dos teus restaurantes com estatísticas diárias por cartão.
           </p>
         </div>
 
         <div class="flex items-center gap-3">
-          <div class="rounded-2xl bg-slate-900 px-4 py-3 text-sm text-white">
-            Link base: <span class="font-semibold"><%= baseUrl %>/go/teu-slug?card=token</span>
+          <div class="rounded-xl bg-slate-800/60 px-4 py-3 text-xs text-slate-300 backdrop-blur border border-slate-700/50">
+            <span class="text-slate-500">Link:</span> <span class="font-mono text-teal-300"><%= baseUrl %>/go/slug</span>
           </div>
           <form action="/admin/logout" method="POST">
-            <button class="btn rounded-full border-0 bg-white text-slate-600 shadow hover:bg-slate-50">
+            <button class="btn btn-sm rounded-full border-0 bg-slate-700 text-slate-200 hover:bg-slate-600">
               Logout
             </button>
           </form>
@@ -90,247 +114,241 @@
       </div>
 
       <% if (error) { %>
-      <div class="alert mb-5 border-0 bg-red-50 text-red-700">
+      <div class="alert mb-5 border-0 border-l-4 border-red-500 bg-red-500/20 text-red-200">
         <span><%= error %></span>
       </div>
       <% } %>
 
       <% if (success) { %>
-      <div class="alert mb-5 border-0 bg-emerald-50 text-emerald-700">
+      <div class="alert mb-5 border-0 border-l-4 border-emerald-500 bg-emerald-500/20 text-emerald-200">
         <span><%= success %></span>
       </div>
       <% } %>
 
-      <section class="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
-        <div class="rounded-3xl border border-white/70 bg-white/85 p-5 shadow-xl shadow-orange-100/40">
-          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">Restaurantes</p>
-          <p class="mt-3 text-4xl font-black text-slate-900"><%= overview.totalLinks %></p>
-          <p class="mt-2 text-sm text-slate-500">Links ativos</p>
+      <section class="mb-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+        <div class="rounded-xl border border-slate-700/50 bg-slate-800/40 p-5 backdrop-blur">
+          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Restaurantes</p>
+          <p class="mt-3 text-3xl font-black text-teal-300"><%= overview.totalLinks %></p>
+          <p class="mt-2 text-xs text-slate-500">Ativos</p>
         </div>
-        <div class="rounded-3xl border border-white/70 bg-white/85 p-5 shadow-xl shadow-orange-100/40">
-          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">Cartoes Totais</p>
-          <p class="mt-3 text-4xl font-black text-slate-900"><%= overview.totalCards %></p>
-          <p class="mt-2 text-sm text-slate-500">Cartoes registados</p>
+        <div class="rounded-xl border border-slate-700/50 bg-slate-800/40 p-5 backdrop-blur">
+          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Cartões Totais</p>
+          <p class="mt-3 text-3xl font-black text-teal-300"><%= overview.totalCards %></p>
+          <p class="mt-2 text-xs text-slate-500">Registados</p>
         </div>
-        <div class="rounded-3xl border border-white/70 bg-white/85 p-5 shadow-xl shadow-orange-100/40">
-          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">Cartoes Ativos</p>
-          <p class="mt-3 text-4xl font-black text-slate-900"><%= overview.totalActiveCards %></p>
-          <p class="mt-2 text-sm text-slate-500">Prontos para uso</p>
+        <div class="rounded-xl border border-slate-700/50 bg-slate-800/40 p-5 backdrop-blur">
+          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Cartões Ativos</p>
+          <p class="mt-3 text-3xl font-black text-emerald-400"><%= overview.totalActiveCards %></p>
+          <p class="mt-2 text-xs text-slate-500">Online</p>
         </div>
-        <div class="rounded-3xl border border-white/70 bg-white/85 p-5 shadow-xl shadow-orange-100/40">
-          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">Aberturas Hoje</p>
-          <p class="mt-3 text-4xl font-black text-slate-900"><%= overview.totalOpensToday %></p>
-          <p class="mt-2 text-sm text-slate-500">Em todos os restaurantes</p>
+        <div class="rounded-xl border border-slate-700/50 bg-slate-800/40 p-5 backdrop-blur">
+          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Hoje</p>
+          <p class="mt-3 text-3xl font-black text-emerald-400"><%= overview.totalOpensToday %></p>
+          <p class="mt-2 text-xs text-slate-500">Aberturas</p>
         </div>
-        <div class="rounded-3xl border border-white/70 bg-white/85 p-5 shadow-xl shadow-orange-100/40">
-          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">Ultimos 7 Dias</p>
-          <p class="mt-3 text-4xl font-black text-slate-900"><%= overview.totalOpensLast7Days %></p>
-          <p class="mt-2 text-sm text-slate-500">Total agregado</p>
+        <div class="rounded-xl border border-slate-700/50 bg-slate-800/40 p-5 backdrop-blur">
+          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">7 Dias</p>
+          <p class="mt-3 text-3xl font-black text-teal-300"><%= overview.totalOpensLast7Days %></p>
+          <p class="mt-2 text-xs text-slate-500">Total</p>
         </div>
       </section>
 
-      <div class="grid gap-6 xl:grid-cols-[1fr_1.5fr]">
-        <section class="rounded-3xl border border-white/70 bg-white/85 p-6 shadow-2xl shadow-orange-200/30 backdrop-blur">
+      <div class="grid gap-8 xl:grid-cols-[1fr_1.5fr]">
+        <section class="rounded-2xl border border-slate-700/50 bg-slate-800/40 p-6 backdrop-blur">
           <div class="mb-6">
-            <p class="mb-3 inline-flex rounded-full bg-orange-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-orange-700">
+            <p class="mb-3 inline-flex rounded-full bg-teal-500/20 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-teal-300">
               Novo Restaurante
             </p>
-            <h2 class="text-2xl font-black tracking-tight text-slate-900">Criar redirect</h2>
-            <p class="mt-2 text-sm leading-6 text-slate-600">
-              Cria o restaurante base. Os cartoes individuais ficam logo abaixo quando selecionares esse restaurante.
+            <h2 class="text-2xl font-black tracking-tight text-white">Criar redirect</h2>
+            <p class="mt-2 text-sm leading-6 text-slate-400">
+              Cria o restaurante base. Os cartões individuais ficam abaixo quando selecionares.
             </p>
           </div>
 
           <form action="/admin/links" method="POST" class="space-y-4">
             <label class="form-control">
               <div class="label px-0">
-                <span class="label-text font-semibold text-slate-700">Nome do Restaurante</span>
+                <span class="label-text font-semibold text-slate-300">Nome do Restaurante</span>
               </div>
               <input
                 type="text"
                 name="restaurant_name"
                 value="<%= formData.restaurant_name || '' %>"
                 placeholder="Ex: Soft Lounge"
-                class="input input-bordered w-full border-orange-200 bg-white"
+                class="input input-bordered w-full border-slate-600 bg-slate-700 text-white placeholder-slate-500"
                 required
               />
             </label>
 
             <label class="form-control">
               <div class="label px-0">
-                <span class="label-text font-semibold text-slate-700">Slug</span>
+                <span class="label-text font-semibold text-slate-300">Slug</span>
               </div>
               <input
                 type="text"
                 name="slug"
                 value="<%= formData.slug || '' %>"
                 placeholder="Ex: soft-lounge"
-                class="input input-bordered w-full border-orange-200 bg-white"
+                class="input input-bordered w-full border-slate-600 bg-slate-700 text-white placeholder-slate-500"
                 required
               />
             </label>
 
             <label class="form-control">
               <div class="label px-0">
-                <span class="label-text font-semibold text-slate-700">URL de Destino</span>
+                <span class="label-text font-semibold text-slate-300">URL de Destino</span>
               </div>
               <input
                 type="url"
                 name="destination_url"
                 value="<%= formData.destination_url || '' %>"
                 placeholder="https://..."
-                class="input input-bordered w-full border-orange-200 bg-white"
+                class="input input-bordered w-full border-slate-600 bg-slate-700 text-white placeholder-slate-500"
                 required
               />
             </label>
 
-            <button class="btn h-12 w-full border-0 bg-orange-500 text-white hover:bg-orange-600">
+            <button class="btn h-12 w-full border-0 bg-teal-600 text-white hover:bg-teal-700">
               Criar restaurante
             </button>
           </form>
         </section>
 
-        <section id="restaurant-history" class="rounded-3xl border border-white/70 bg-white/85 p-6 shadow-2xl shadow-orange-200/30 backdrop-blur">
+        <section id="restaurant-history" class="rounded-2xl border border-slate-700/50 bg-slate-800/40 p-6 backdrop-blur">
           <div class="mb-5 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Historico do Restaurante</p>
-              <h2 class="mt-2 text-2xl font-black tracking-tight text-slate-900">
+              <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-400">Histórico do Restaurante</p>
+              <h2 class="mt-2 text-2xl font-black tracking-tight text-white">
                 <%= selectedLink ? selectedLink.restaurant_name : 'Seleciona um restaurante' %>
               </h2>
-              <p class="mt-2 text-sm text-slate-500">
-                Totais diarios do restaurante nos ultimos <%= selectedLinkHistory.labels.length || 0 %> dias.
+              <p class="mt-2 text-sm text-slate-400">
+                Totais diários nos últimos <%= selectedLinkHistory.labels.length || 0 %> dias.
               </p>
             </div>
             <% if (selectedLink) { %>
-            <div class="rounded-2xl bg-slate-900 px-4 py-3 text-sm text-white">
-              Link publico: <span class="font-semibold"><%= baseUrl %>/go/<%= selectedLink.slug %></span>
+            <div class="rounded-lg bg-slate-900/60 px-4 py-3 text-xs border border-slate-600 backdrop-blur">
+              <span class="text-slate-400">Link:</span> <span class="font-mono text-teal-300"><%= baseUrl %>/go/<%= selectedLink.slug %></span>
             </div>
             <% } %>
           </div>
 
-          <div class="rounded-3xl border border-slate-200 bg-white p-4">
+          <div class="rounded-lg border border-slate-700 bg-slate-900/50 p-4">
             <canvas id="restaurantHistoryChart" height="120"></canvas>
           </div>
         </section>
       </div>
 
-      <section class="mt-6 rounded-3xl border border-white/70 bg-white/85 p-4 shadow-2xl shadow-orange-200/30 backdrop-blur sm:p-6">
-        <div class="mb-5">
-          <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Restaurantes</p>
-          <h2 class="mt-2 text-2xl font-black tracking-tight text-slate-900">Dashboard por restaurante</h2>
+      <section class="mt-8 rounded-2xl border border-slate-700/50 bg-slate-800/40 p-6 backdrop-blur">
+        <div class="mb-6">
+          <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-400">Restaurantes</p>
+          <h2 class="mt-2 text-3xl font-black tracking-tight text-white">Dashboard por restaurante</h2>
         </div>
 
-        <div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white">
-          <table class="table">
-            <thead class="bg-slate-50 text-slate-600">
-              <tr>
-                <th>Restaurante</th>
-                <th>Slug</th>
-                <th>Cartoes Ativos</th>
-                <th>Hoje</th>
-                <th>7 Dias</th>
-                <th>Destino</th>
-                <th class="text-right">Acoes</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% if (!links.length) { %>
-              <tr>
-                <td colspan="7" class="py-10 text-center text-sm text-slate-500">
-                  Ainda nao existem restaurantes. Cria o primeiro no formulario acima.
-                </td>
-              </tr>
-              <% } %>
-
-              <% links.forEach((link) => { %>
-              <tr class="align-top">
-                <td class="min-w-[220px]">
-                  <form id="update-link-<%= link.id %>" action="/admin/links/<%= link.id %>/update" method="POST" class="space-y-2">
-                    <input
-                      type="text"
-                      name="restaurant_name"
-                      value="<%= editingId === link.id ? formData.restaurant_name || link.restaurant_name : link.restaurant_name %>"
-                      class="input input-bordered input-sm w-full border-slate-200 bg-white"
-                      required
-                    />
-                    <a
-                      href="/admin?link=<%= link.id %>#restaurant-history"
-                      class="inline-flex text-xs font-semibold text-orange-600 hover:text-orange-700"
-                    >
-                      Ver dashboard
-                    </a>
-                  </form>
-                </td>
-                <td class="min-w-[180px]">
-                  <input
-                    form="update-link-<%= link.id %>"
-                    type="text"
-                    name="slug"
-                    value="<%= editingId === link.id ? formData.slug || link.slug : link.slug %>"
-                    class="input input-bordered input-sm w-full border-slate-200 bg-white"
-                    required
-                  />
-                </td>
-                <td class="text-sm font-semibold text-slate-700"><%= link.card_count %></td>
-                <td class="text-sm font-semibold text-slate-700"><%= link.opens_today %></td>
-                <td class="text-sm font-semibold text-slate-700"><%= link.opens_last_7_days %></td>
-                <td class="min-w-[300px]">
-                  <input
-                    form="update-link-<%= link.id %>"
-                    type="url"
-                    name="destination_url"
-                    value="<%= editingId === link.id ? formData.destination_url || link.destination_url : link.destination_url %>"
-                    class="input input-bordered input-sm w-full border-slate-200 bg-white"
-                    required
-                  />
-                  <div class="mt-2 flex flex-col gap-1">
-                    <a
-                      href="/go/<%= link.slug %>"
-                      target="_blank"
-                      rel="noreferrer"
-                      class="inline-flex text-xs font-semibold text-orange-600 hover:text-orange-700"
-                    >
-                      Abrir <%= baseUrl %>/go/<%= link.slug %>
-                    </a>
-                    <span class="text-xs text-slate-400">14 dias: <%= link.opens_last_14_days %> aberturas</span>
-                  </div>
-                </td>
-                <td class="w-[220px]">
-                  <div class="flex justify-end gap-2">
-                    <button
-                      form="update-link-<%= link.id %>"
-                      class="btn btn-sm border-0 bg-slate-900 text-white hover:bg-slate-800"
-                    >
-                      Guardar
-                    </button>
-                    <form action="/admin/links/<%= link.id %>/delete" method="POST">
-                      <button
-                        class="btn btn-sm border-0 bg-red-500 text-white hover:bg-red-600"
-                        onclick="return confirm('Apagar este restaurante, cartoes e estatisticas?');"
-                      >
-                        Apagar
-                      </button>
-                    </form>
-                  </div>
-                </td>
-              </tr>
-              <% }) %>
-            </tbody>
-          </table>
+        <% if (!links.length) { %>
+        <div class="rounded-xl border border-dashed border-slate-600 bg-slate-900/50 p-12 text-center">
+          <p class="text-sm text-slate-400">Ainda não existem restaurantes. Cria o primeiro no formulário acima.</p>
         </div>
+        <% } else { %>
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <% links.forEach((link) => { %>
+          <div class="status-<%= link.status %> group rounded-xl border-2 p-5 transition hover:shadow-lg">
+            <div class="mb-4 flex items-start justify-between">
+              <div class="flex-1">
+                <div class="flex items-center gap-2">
+                  <h3 class="text-lg font-bold text-white"><%= link.restaurant_name %></h3>
+                  <div class="dot-<%= link.status %> h-3 w-3 rounded-full"></div>
+                </div>
+                <p class="mt-1 text-xs font-semibold text-slate-300"><%= link.status_label %></p>
+              </div>
+              <div class="flex gap-1 opacity-0 transition group-hover:opacity-100">
+                <a
+                  href="/admin?link=<%= link.id %>"
+                  class="btn btn-xs border-0 bg-slate-700 text-slate-200 hover:bg-slate-600"
+                >
+                  Ver
+                </a>
+              </div>
+            </div>
+
+            <div class="space-y-3">
+              <div class="grid grid-cols-2 gap-3">
+                <div class="rounded-lg bg-black/30 p-3">
+                  <p class="text-xs text-slate-400">Hoje</p>
+                  <p class="mt-1 text-2xl font-bold text-emerald-400"><%= link.opens_today %></p>
+                </div>
+                <div class="rounded-lg bg-black/30 p-3">
+                  <p class="text-xs text-slate-400">7 Dias</p>
+                  <p class="mt-1 text-2xl font-bold text-teal-400"><%= link.opens_last_7_days %></p>
+                </div>
+              </div>
+
+              <div class="rounded-lg bg-black/30 p-3">
+                <p class="text-xs text-slate-400">Cartões</p>
+                <p class="mt-1 font-mono text-sm text-slate-300"><%= link.card_count %>/<%= link.total_cards %> ativos</p>
+              </div>
+
+              <div class="rounded-lg bg-black/30 p-3">
+                <p class="text-xs text-slate-400">Slug</p>
+                <p class="mt-1 font-mono text-xs text-teal-300"><%= link.slug %></p>
+              </div>
+            </div>
+
+            <form id="update-link-<%= link.id %>" action="/admin/links/<%= link.id %>/update" method="POST" class="mt-4 hidden space-y-3">
+              <input
+                type="text"
+                name="restaurant_name"
+                value="<%= editingId === link.id ? formData.restaurant_name || link.restaurant_name : link.restaurant_name %>"
+                class="input input-bordered input-sm w-full border-slate-600 bg-slate-700 text-white"
+              />
+              <input
+                type="text"
+                name="slug"
+                value="<%= editingId === link.id ? formData.slug || link.slug : link.slug %>"
+                class="input input-bordered input-sm w-full border-slate-600 bg-slate-700 text-white"
+              />
+              <input
+                type="url"
+                name="destination_url"
+                value="<%= editingId === link.id ? formData.destination_url || link.destination_url : link.destination_url %>"
+                class="input input-bordered input-sm w-full border-slate-600 bg-slate-700 text-white"
+              />
+              <div class="flex gap-2">
+                <button class="btn btn-sm border-0 flex-1 bg-teal-600 text-white hover:bg-teal-700">Guardar</button>
+                <form action="/admin/links/<%= link.id %>/delete" method="POST" class="flex-1">
+                  <button
+                    class="btn btn-sm w-full border-0 bg-red-600 text-white hover:bg-red-700"
+                    onclick="return confirm('Apagar restaurante e todos os dados?');"
+                  >
+                    Apagar
+                  </button>
+                </form>
+              </div>
+            </form>
+
+            <button
+              type="button"
+              onclick="document.getElementById('update-link-<%= link.id %>').classList.toggle('hidden'); this.classList.toggle('hidden');"
+              class="btn btn-sm btn-ghost w-full mt-2 text-slate-300"
+            >
+              Editar
+            </button>
+          </div>
+          <% }) %>
+        </div>
+        <% } %>
       </section>
 
-      <section id="cards" class="mt-6 grid gap-6 xl:grid-cols-[1fr_1.35fr]">
-        <div class="rounded-3xl border border-white/70 bg-white/85 p-6 shadow-2xl shadow-orange-200/30 backdrop-blur">
+      <section id="cards" class="mt-8 grid gap-8 xl:grid-cols-[1fr_1.35fr]">
+        <div class="rounded-2xl border border-slate-700/50 bg-slate-800/40 p-6 backdrop-blur">
           <div class="mb-6">
-            <p class="mb-3 inline-flex rounded-full bg-orange-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-orange-700">
-              Cartoes NFC
+            <p class="mb-3 inline-flex rounded-full bg-teal-500/20 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-teal-300">
+              Cartões NFC
             </p>
-            <h2 class="text-2xl font-black tracking-tight text-slate-900">
-              <%= selectedLink ? `Novo cartao para ${selectedLink.restaurant_name}` : 'Seleciona um restaurante' %>
+            <h2 class="text-2xl font-black tracking-tight text-white">
+              <%= selectedLink ? `Novo cartão para ${selectedLink.restaurant_name}` : 'Seleciona um restaurante' %>
             </h2>
-            <p class="mt-2 text-sm leading-6 text-slate-600">
-              Cada cartao tem um token unico. E esse token vai no link do NFC para conseguires ver estatisticas reais por cartao.
+            <p class="mt-2 text-sm leading-6 text-slate-400">
+              Cria cartões com tokens únicos para rastrear aberturas por cartão.
             </p>
           </div>
 
@@ -338,7 +356,7 @@
           <form action="/admin/links/<%= selectedLink.id %>/cards" method="POST" class="space-y-4">
             <label class="form-control">
               <div class="label px-0">
-                <span class="label-text font-semibold text-slate-700">Quantidade de cartoes</span>
+                <span class="label-text font-semibold text-slate-300">Quantidade de cartões</span>
               </div>
               <input
                 type="number"
@@ -346,185 +364,167 @@
                 min="1"
                 max="50"
                 value="<%= cardFormData.quantity || 1 %>"
-                class="input input-bordered w-full border-orange-200 bg-white"
+                class="input input-bordered w-full border-slate-600 bg-slate-700 text-white placeholder-slate-500"
               />
               <div class="label px-0">
-                <span class="label-text-alt text-slate-500">O sistema gera etiquetas e tokens automaticamente como "<%= selectedLink.restaurant_name %> 1" e "<%= selectedLink.restaurant_name.toLowerCase().replace(/\s+/g, '-') %>-1".</span>
+                <span class="label-text-alt text-slate-400 text-xs">Gera automaticamente como "<%= selectedLink.restaurant_name %> 1", "<%= selectedLink.restaurant_name %> 2"...</span>
               </div>
             </label>
 
             <label class="form-control">
               <div class="label px-0">
-                <span class="label-text font-semibold text-slate-700">Etiqueta opcional (1 cartao)</span>
+                <span class="label-text font-semibold text-slate-300">Etiqueta opcional</span>
               </div>
               <input
                 type="text"
                 name="label"
                 value="<%= cardFormData.label || '' %>"
-                placeholder="Opcional: Ex. Mesa 01"
-                class="input input-bordered w-full border-orange-200 bg-white"
+                placeholder="Opcional para 1 cartão"
+                class="input input-bordered w-full border-slate-600 bg-slate-700 text-white placeholder-slate-500"
               />
             </label>
 
             <label class="form-control">
               <div class="label px-0">
-                <span class="label-text font-semibold text-slate-700">Token opcional (1 cartao)</span>
+                <span class="label-text font-semibold text-slate-300">Token opcional</span>
               </div>
               <input
                 type="text"
                 name="public_token"
                 value="<%= cardFormData.public_token || '' %>"
-                placeholder="Opcional: Ex. soft-mesa-01"
-                class="input input-bordered w-full border-orange-200 bg-white"
+                placeholder="Opcional para 1 cartão"
+                class="input input-bordered w-full border-slate-600 bg-slate-700 text-white placeholder-slate-500"
               />
-              <div class="label px-0">
-                <span class="label-text-alt text-slate-500">Se deixares vazio, será gerado automaticamente para um único cartao.</span>
-              </div>
             </label>
 
             <label class="form-control">
               <div class="label px-0">
-                <span class="label-text font-semibold text-slate-700">Estado</span>
+                <span class="label-text font-semibold text-slate-300">Estado</span>
               </div>
-              <select name="is_active" class="select select-bordered border-orange-200 bg-white">
+              <select name="is_active" class="select select-bordered border-slate-600 bg-slate-700 text-white">
                 <option value="true" <%= cardFormData.is_active === false ? '' : 'selected' %>>Ativo</option>
                 <option value="false" <%= cardFormData.is_active === false ? 'selected' : '' %>>Inativo</option>
               </select>
             </label>
 
-            <button class="btn h-12 w-full border-0 bg-orange-500 text-white hover:bg-orange-600">
-              Criar cartoes
+            <button class="btn h-12 w-full border-0 bg-teal-600 text-white hover:bg-teal-700">
+              Criar cartões
             </button>
           </form>
           <% } else { %>
-          <div class="rounded-2xl border border-dashed border-slate-300 bg-white/80 p-6 text-sm text-slate-500">
-            Cria ou seleciona um restaurante para começares a associar cartoes NFC.
+          <div class="rounded-xl border border-dashed border-slate-600 bg-slate-900/50 p-6 text-center">
+            <p class="text-sm text-slate-400">Seleciona um restaurante para criar cartões</p>
           </div>
           <% } %>
         </div>
 
-        <div id="card-history" class="rounded-3xl border border-white/70 bg-white/85 p-6 shadow-2xl shadow-orange-200/30 backdrop-blur">
-          <div class="mb-5 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-            <div>
-              <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Historico do Cartao</p>
-              <h2 class="mt-2 text-2xl font-black tracking-tight text-slate-900">
-                <%= selectedCard ? (selectedCard.label || selectedCard.public_token) : 'Seleciona um cartao' %>
-              </h2>
-              <p class="mt-2 text-sm text-slate-500">
-                Cada ponto mostra as aberturas diarias daquele cartao especifico.
-              </p>
-            </div>
-            <% if (selectedLink && selectedCard) { %>
-            <div class="rounded-2xl bg-slate-900 px-4 py-3 text-sm text-white">
-              NFC URL: <span class="font-semibold"><%= baseUrl %>/go/<%= selectedLink.slug %>?card=<%= selectedCard.public_token %></span>
-            </div>
-            <% } %>
+        <div id="card-history" class="rounded-2xl border border-slate-700/50 bg-slate-800/40 p-6 backdrop-blur">
+          <div class="mb-5">
+            <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-400">Histórico do Cartão</p>
+            <h2 class="mt-2 text-2xl font-black tracking-tight text-white">
+              <%= selectedCard ? (selectedCard.label || selectedCard.public_token) : 'Seleciona um cartão' %>
+            </h2>
+            <p class="mt-2 text-sm text-slate-400">
+              Aberturas diárias do cartão selecionado.
+            </p>
           </div>
 
-          <div class="rounded-3xl border border-slate-200 bg-white p-4">
+          <div class="rounded-lg border border-slate-700 bg-slate-900/50 p-4">
             <canvas id="cardHistoryChart" height="120"></canvas>
           </div>
         </div>
       </section>
 
-      <section class="mt-6 rounded-3xl border border-white/70 bg-white/85 p-4 shadow-2xl shadow-orange-200/30 backdrop-blur sm:p-6">
+      <section class="mt-8 rounded-2xl border border-slate-700/50 bg-slate-800/40 p-6 backdrop-blur">
         <div class="mb-5">
-          <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Cartoes do Restaurante</p>
-          <h2 class="mt-2 text-2xl font-black tracking-tight text-slate-900">
+          <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-400">Cartões</p>
+          <h2 class="text-2xl font-black tracking-tight text-white">
             <%= selectedLink ? selectedLink.restaurant_name : 'Seleciona um restaurante' %>
           </h2>
         </div>
 
-        <div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white">
-          <table class="table">
-            <thead class="bg-slate-50 text-slate-600">
+        <div class="overflow-x-auto rounded-lg border border-slate-700">
+          <table class="table table-sm">
+            <thead class="bg-slate-900/50 text-slate-400">
               <tr>
-                <th>Etiqueta</th>
-                <th>Token</th>
-                <th>Estado</th>
-                <th>Hoje</th>
-                <th>7 Dias</th>
-                <th>Link do NFC</th>
-                <th class="text-right">Acoes</th>
+                <th class="text-slate-400">Etiqueta</th>
+                <th class="text-slate-400">Token</th>
+                <th class="text-slate-400">Estado</th>
+                <th class="text-slate-400">Hoje</th>
+                <th class="text-slate-400">7 Dias</th>
+                <th class="text-slate-400">Link</th>
+                <th class="text-right text-slate-400">Ações</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody class="bg-slate-800/30">
               <% if (!cards.length) { %>
               <tr>
-                <td colspan="7" class="py-10 text-center text-sm text-slate-500">
-                  Ainda nao existem cartoes para este restaurante.
+                <td colspan="7" class="py-8 text-center text-sm text-slate-500">
+                  Sem cartões para este restaurante
                 </td>
               </tr>
               <% } %>
 
               <% cards.forEach((card) => { %>
-              <tr class="align-top">
-                <td class="min-w-[180px]">
-                  <form id="update-card-<%= card.id %>" action="/admin/cards/<%= card.id %>/update" method="POST" class="space-y-2">
+              <tr class="align-top border-t border-slate-700/50">
+                <td class="min-w-[150px]">
+                  <form id="update-card-<%= card.id %>" action="/admin/cards/<%= card.id %>/update" method="POST">
                     <input type="hidden" name="link_id" value="<%= selectedLink ? selectedLink.id : '' %>" />
                     <input
                       type="text"
                       name="label"
                       value="<%= editingCardId === card.id ? cardFormData.label || card.label : card.label || '' %>"
-                      placeholder="Ex: Mesa 01"
-                      class="input input-bordered input-sm w-full border-slate-200 bg-white"
+                      placeholder="Label"
+                      class="input input-bordered input-xs w-full border-slate-600 bg-slate-700 text-white"
                     />
-                    <a
-                      href="/admin?link=<%= selectedLink ? selectedLink.id : '' %>&card=<%= card.id %>#card-history"
-                      class="inline-flex text-xs font-semibold text-orange-600 hover:text-orange-700"
-                    >
-                      Ver stats
-                    </a>
                   </form>
                 </td>
-                <td class="min-w-[180px]">
+                <td class="min-w-[140px]">
                   <input
                     form="update-card-<%= card.id %>"
                     type="text"
                     name="public_token"
                     value="<%= editingCardId === card.id ? cardFormData.public_token || card.public_token : card.public_token %>"
-                    class="input input-bordered input-sm w-full border-slate-200 bg-white"
-                    required
+                    class="input input-bordered input-xs w-full border-slate-600 bg-slate-700 text-white font-mono"
                   />
                 </td>
-                <td class="min-w-[130px]">
+                <td class="min-w-[100px]">
                   <select
                     form="update-card-<%= card.id %>"
                     name="is_active"
-                    class="select select-bordered select-sm w-full border-slate-200 bg-white"
+                    class="select select-bordered select-xs w-full border-slate-600 bg-slate-700 text-white"
                   >
                     <option value="true" <%= (editingCardId === card.id ? cardFormData.is_active : card.is_active) ? 'selected' : '' %>>Ativo</option>
                     <option value="false" <%= (editingCardId === card.id ? cardFormData.is_active : card.is_active) ? '' : 'selected' %>>Inativo</option>
                   </select>
                 </td>
-                <td class="text-sm font-semibold text-slate-700"><%= card.opens_today %></td>
-                <td class="text-sm font-semibold text-slate-700"><%= card.opens_last_7_days %></td>
-                <td class="min-w-[320px]">
+                <td class="text-sm font-semibold text-slate-300"><%= card.opens_today %></td>
+                <td class="text-sm font-semibold text-slate-300"><%= card.opens_last_7_days %></td>
+                <td class="min-w-[200px]">
                   <% if (selectedLink) { %>
                   <a
                     href="/go/<%= selectedLink.slug %>?card=<%= card.public_token %>"
                     target="_blank"
                     rel="noreferrer"
-                    class="inline-flex text-xs font-semibold text-orange-600 hover:text-orange-700"
+                    class="text-xs font-mono text-teal-400 hover:text-teal-300"
                   >
-                    <%= baseUrl %>/go/<%= selectedLink.slug %>?card=<%= card.public_token %>
+                    /go/<%= selectedLink.slug %>
                   </a>
-                  <div class="mt-2 text-xs text-slate-400">14 dias: <%= card.opens_last_14_days %> aberturas</div>
                   <% } %>
                 </td>
-                <td class="w-[220px]">
-                  <div class="flex justify-end gap-2">
+                <td class="w-[140px]">
+                  <div class="flex justify-end gap-1">
                     <button
                       form="update-card-<%= card.id %>"
-                      class="btn btn-sm border-0 bg-slate-900 text-white hover:bg-slate-800"
+                      class="btn btn-xs border-0 bg-teal-700 text-white hover:bg-teal-600"
                     >
                       Guardar
                     </button>
                     <form action="/admin/cards/<%= card.id %>/delete" method="POST">
                       <input type="hidden" name="link_id" value="<%= selectedLink ? selectedLink.id : '' %>" />
                       <button
-                        class="btn btn-sm border-0 bg-red-500 text-white hover:bg-red-600"
-                        onclick="return confirm('Apagar este cartao e as estatisticas dele?');"
+                        class="btn btn-xs border-0 bg-red-700 text-white hover:bg-red-600"
+                        onclick="return confirm('Apagar cartão?');"
                       >
                         Apagar
                       </button>
@@ -544,7 +544,7 @@
         const cardHistoryLabels = <%- JSON.stringify(selectedCardHistory.labels || []) %>;
         const cardHistoryValues = <%- JSON.stringify(selectedCardHistory.values || []) %>;
         const selectedRestaurantName = <%- JSON.stringify(selectedLink ? selectedLink.restaurant_name : 'Restaurante') %>;
-        const selectedCardName = <%- JSON.stringify(selectedCard ? (selectedCard.label || selectedCard.public_token) : 'Cartao') %>;
+        const selectedCardName = <%- JSON.stringify(selectedCard ? (selectedCard.label || selectedCard.public_token) : 'Cartão') %>;
 
         function renderHistoryChart(elementId, labels, values, datasetLabel, color) {
           const chartCanvas = document.getElementById(elementId);
@@ -562,11 +562,14 @@
                   label: datasetLabel,
                   data: values,
                   borderColor: color,
-                  backgroundColor: color === '#f97316' ? 'rgba(249, 115, 22, 0.18)' : 'rgba(15, 23, 42, 0.16)',
+                  backgroundColor: color === '#0d9488' ? 'rgba(13, 148, 136, 0.15)' : 'rgba(59, 130, 246, 0.15)',
                   fill: true,
-                  tension: 0.32,
-                  pointRadius: 3,
-                  pointHoverRadius: 4
+                  tension: 0.4,
+                  pointRadius: 4,
+                  pointHoverRadius: 6,
+                  pointBackgroundColor: color,
+                  pointBorderColor: '#1e293b',
+                  pointBorderWidth: 2
                 }
               ]
             },
@@ -577,13 +580,17 @@
                 y: {
                   beginAtZero: true,
                   ticks: {
-                    precision: 0
+                    precision: 0,
+                    color: '#94a3b8'
                   },
                   grid: {
-                    color: 'rgba(148, 163, 184, 0.18)'
+                    color: 'rgba(71, 85, 105, 0.2)'
                   }
                 },
                 x: {
+                  ticks: {
+                    color: '#94a3b8'
+                  },
                   grid: {
                     display: false
                   }
@@ -591,7 +598,9 @@
               },
               plugins: {
                 legend: {
-                  display: true
+                  labels: {
+                    color: '#cbd5e1'
+                  }
                 }
               }
             }
@@ -603,7 +612,7 @@
           restaurantHistoryLabels,
           restaurantHistoryValues,
           `Aberturas - ${selectedRestaurantName}`,
-          '#f97316'
+          '#0d9488'
         );
 
         renderHistoryChart(
@@ -611,7 +620,7 @@
           cardHistoryLabels,
           cardHistoryValues,
           `Aberturas - ${selectedCardName}`,
-          '#0f172a'
+          '#3b82f6'
         );
       </script>
       <% } %>
