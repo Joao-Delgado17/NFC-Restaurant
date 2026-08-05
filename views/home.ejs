@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+  <head>
+    <%- include('partials/public-head', { title: 'Cartões NFC para o teu negócio e para ti', description: 'Quick Menu: menus digitais por NFC para restaurantes e cartões de visita NFC pessoais.' }) %>
+  </head>
+  <body class="min-h-screen text-neutral-200">
+    <%- include('partials/public-nav') %>
+
+    <main>
+      <section class="relative overflow-hidden px-4 pb-24 pt-16 text-center sm:px-6 lg:px-8">
+        <div class="pointer-events-none absolute left-1/2 top-6 -z-10 h-56 w-[32rem] -translate-x-1/2 rounded-b-full bg-gradient-to-b from-teal-400/25 to-transparent blur-3xl"></div>
+
+        <div class="mb-10 flex items-center justify-center gap-3">
+          <span class="h-px w-8 bg-gradient-to-r from-transparent to-teal-500"></span>
+          <p class="text-xs font-semibold uppercase tracking-[0.35em] text-teal-400">Tecnologia NFC</p>
+          <span class="h-px w-8 bg-gradient-to-l from-transparent to-teal-500"></span>
+        </div>
+        <h1 class="mx-auto max-w-3xl text-5xl font-extrabold leading-tight tracking-tight text-white sm:text-6xl">
+          Um toque. É tudo o que é preciso.
+        </h1>
+        <p class="mx-auto mt-6 max-w-xl text-base leading-7 text-neutral-300">
+          A Quick Menu cria soluções de cartões NFC — desde menus digitais para restaurantes
+          até cartões de visita pessoais — para partilhares informação instantaneamente, sem apps e sem fricção.
+        </p>
+      </section>
+
+      <section id="restaurantes" class="mx-auto max-w-5xl px-4 pb-8 sm:px-6 lg:px-8">
+        <div class="grid gap-6 md:grid-cols-2">
+          <div class="rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.08] to-white/[0.02] backdrop-blur-sm p-10 shadow-xl shadow-black/30">
+            <div class="mb-4 flex items-center gap-3">
+              <span class="h-px w-8 bg-teal-500"></span>
+              <p class="text-xs font-semibold uppercase tracking-[0.3em] text-teal-400">Para Restaurantes</p>
+            </div>
+            <h2 class="text-2xl font-extrabold tracking-tight text-white">Quick Menu Restaurantes</h2>
+            <p class="mt-4 text-sm leading-6 text-neutral-400">
+              Cartões NFC nas mesas que abrem o teu menu digital instantaneamente. Sem QR codes
+              a envelhecer, sem impressões a refazer sempre que mudas os preços.
+            </p>
+            <p class="mt-4 text-sm leading-6 text-neutral-500">
+              Design dos cartões pela nossa parceira oficial —
+              <a href="/parcerias" class="font-medium text-teal-400 underline decoration-teal-400/40 underline-offset-2 hover:text-teal-300">conhece a ORYA Creative Studio</a>.
+            </p>
+            <p class="mt-6 text-sm text-neutral-400">
+              Tens um restaurante e queres saber mais? Fala connosco diretamente.
+            </p>
+          </div>
+
+          <div class="rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.08] to-white/[0.02] backdrop-blur-sm p-10 shadow-xl shadow-black/30">
+            <div class="mb-4 flex items-center gap-3">
+              <span class="h-px w-8 bg-teal-500"></span>
+              <p class="text-xs font-semibold uppercase tracking-[0.3em] text-teal-400">Para Ti</p>
+            </div>
+            <h2 class="text-2xl font-extrabold tracking-tight text-white">Quick Menu Pessoal</h2>
+            <p class="mt-4 text-sm leading-6 text-neutral-400">
+              O teu cartão de visita, mas num toque. Partilha o teu LinkedIn, Instagram, WhatsApp
+              ou portefólio instantaneamente — chega de andar com uma pilha de cartões de papel.
+            </p>
+            <a
+              href="/pessoal"
+              class="mt-6 inline-flex rounded-full bg-gradient-to-t from-teal-950 to-teal-500 px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-teal-900/30 transition hover:to-teal-400"
+            >
+              Conhecer o cartão pessoal
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <%- include('partials/public-footer') %>
+  </body>
+</html>

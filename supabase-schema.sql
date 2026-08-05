@@ -86,3 +86,26 @@ begin
   do update set open_count = public.daily_card_stats.open_count + 1;
 end;
 $$;
+
+create table if not exists public.orders (
+  id uuid primary key default gen_random_uuid(),
+  created_at timestamptz not null default now(),
+  full_name text not null,
+  email text,
+  phone text,
+  company text,
+  role text,
+  social_link text,
+  quantity integer not null default 1,
+  notes text,
+  status text not null default 'pending'
+);
+
+create index if not exists orders_status_idx on public.orders (status);
+create index if not exists orders_created_at_idx on public.orders (created_at desc);
+
+alter table public.orders add column if not exists attachment_urls text[];
+
+insert into storage.buckets (id, name, public)
+values ('order-attachments', 'order-attachments', true)
+on conflict (id) do nothing;

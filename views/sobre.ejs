@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+  <head>
+    <%- include('partials/public-head', { title: 'Sobre Nós', description: 'Quick Menu: tecnologia NFC para restaurantes e cartões pessoais.' }) %>
+  </head>
+  <body class="min-h-screen text-neutral-200">
+    <%- include('partials/public-nav') %>
+
+    <main>
+      <section class="relative overflow-hidden px-4 pb-24 pt-16 text-center sm:px-6 lg:px-8">
+        <div class="pointer-events-none absolute left-1/2 top-6 -z-10 h-56 w-[32rem] -translate-x-1/2 rounded-b-full bg-gradient-to-b from-teal-400/25 to-transparent blur-3xl"></div>
+
+        <div class="mb-10 flex items-center justify-center gap-3">
+          <span class="h-px w-8 bg-gradient-to-r from-transparent to-teal-500"></span>
+          <p class="text-xs font-semibold uppercase tracking-[0.35em] text-teal-400">Sobre Nós</p>
+          <span class="h-px w-8 bg-gradient-to-l from-transparent to-teal-500"></span>
+        </div>
+        <h1 class="text-5xl font-extrabold leading-tight tracking-tight text-white sm:text-6xl">Poder Tecnológico</h1>
+        <p class="mx-auto mt-6 max-w-xl text-base leading-7 text-neutral-300">
+          A Quick Menu nasceu para resolver um problema simples: menus impressos que envelhecem
+          e cartões de papel que se perdem. Com um cartão NFC e um toque, a informação certa
+          chega instantaneamente — sem apps, sem fricção.
+        </p>
+      </section>
+
+      <section class="mx-auto max-w-3xl px-4 pb-24 sm:px-6 lg:px-8">
+        <div class="rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.08] to-white/[0.02] backdrop-blur-sm p-10 shadow-xl shadow-black/30">
+          <div class="mb-4 flex items-center gap-3">
+            <span class="h-px w-8 bg-teal-500"></span>
+            <p class="text-xs font-semibold uppercase tracking-[0.3em] text-teal-400">O que fazemos</p>
+          </div>
+          <ul class="mt-2 space-y-3 text-sm text-neutral-400">
+            <li>&bull; <span class="font-semibold text-white">NFC</span> — cartões que abrem qualquer link com um toque.</li>
+            <li>&bull; <span class="font-semibold text-white">Menus Digitais</span> — para restaurantes, sempre atualizados.</li>
+            <li>&bull; <span class="font-semibold text-white">Analytics</span> — sabes exatamente quantas vezes cada cartão foi usado.</li>
+          </ul>
+          <p class="mt-6 text-sm leading-6 text-neutral-500">
+            O design de cada cartão é feito por parceiros dedicados —
+            <a href="/parcerias" class="font-medium text-teal-400 underline decoration-teal-400/40 underline-offset-2 hover:text-teal-300">conhece as nossas parcerias</a>.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <%- include('partials/public-footer') %>
+  </body>
+</html>

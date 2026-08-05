@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+  <head>
+    <%- include('partials/public-head', { title: 'Cartões de Visita NFC Pessoais', description: 'Cartão de visita NFC pessoal Quick Menu: partilha os teus contactos e redes sociais com um toque.' }) %>
+  </head>
+  <body class="min-h-screen text-neutral-200">
+    <%- include('partials/public-nav') %>
+
+    <main>
+      <section class="relative overflow-hidden px-4 pb-16 pt-16 text-center sm:px-6 lg:px-8">
+        <div class="pointer-events-none absolute left-1/2 top-6 -z-10 h-56 w-[32rem] -translate-x-1/2 rounded-b-full bg-gradient-to-b from-teal-400/25 to-transparent blur-3xl"></div>
+
+        <div class="mb-8 flex items-center justify-center gap-3">
+          <span class="h-px w-8 bg-gradient-to-r from-transparent to-teal-500"></span>
+          <p class="text-xs font-semibold uppercase tracking-[0.35em] text-teal-400">Quick Menu Pessoal</p>
+          <span class="h-px w-8 bg-gradient-to-l from-transparent to-teal-500"></span>
+        </div>
+        <h1 class="mx-auto max-w-xl text-5xl font-extrabold leading-tight tracking-tight text-white sm:text-6xl">
+          O teu cartão de visita
+        </h1>
+        <p class="mx-auto mt-6 max-w-xl text-base leading-7 text-neutral-300">
+          O cartão de visita com um toque digital. Aproximas ao telemóvel de alguém e o teu portfólio, website ou ficheiro abrem na hora com tecnologia NFC (contactless).
+        </p>
+      </section>
+
+      <section class="mx-auto max-w-5xl px-4 pb-24 sm:px-6 lg:px-8">
+        <div class="grid gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+          <div class="space-y-6">
+            <div class="rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.08] to-white/[0.02] backdrop-blur-sm p-6 shadow-xl shadow-black/30">
+              <p class="mb-4 text-xs font-semibold uppercase tracking-[0.3em] text-teal-400">Como funciona</p>
+              <ol class="space-y-4">
+                <li class="flex items-start gap-3">
+                  <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-teal-400/15 text-xs font-bold text-teal-400">1</span>
+                  <div>
+                    <p class="text-sm font-semibold text-white">Encomendas</p>
+                    <p class="text-xs text-neutral-500">Preenches o formulário ao lado.</p>
+                  </div>
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-teal-400/15 text-xs font-bold text-teal-400">2</span>
+                  <div>
+                    <p class="text-sm font-semibold text-white">Personalizamos</p>
+                    <p class="text-xs text-neutral-500">Escolhemos o design do cartão contigo.</p>
+                  </div>
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-teal-400/15 text-xs font-bold text-teal-400">3</span>
+                  <div>
+                    <p class="text-sm font-semibold text-white">Configuramos</p>
+                    <p class="text-xs text-neutral-500">Ligamos o cartão ao teu conteúdo.</p>
+                  </div>
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-teal-400/15 text-xs font-bold text-teal-400">4</span>
+                  <div>
+                    <p class="text-sm font-semibold text-white">Recebes</p>
+                    <p class="text-xs text-neutral-500">Chega por correio pronto a usar.</p>
+                  </div>
+                </li>
+              </ol>
+            </div>
+
+            <div class="rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.08] to-white/[0.02] backdrop-blur-sm p-6 shadow-xl shadow-black/30">
+              <p class="mb-3 text-xs font-semibold uppercase tracking-[0.3em] text-teal-400">Incluído</p>
+              <h2 class="text-lg font-extrabold tracking-tight text-white">Dashboard pessoal</h2>
+              <ul class="mt-3 space-y-2.5 text-xs leading-5 text-neutral-400">
+                <li class="flex gap-2">
+                  <span class="text-teal-400">&bull;</span>
+                  <span><span class="font-semibold text-white">Editas quando quiseres</span> — muda emprego, número ou redes sociais sem pedir cartão novo.</span>
+                </li>
+                <li class="flex gap-2">
+                  <span class="text-teal-400">&bull;</span>
+                  <span><span class="font-semibold text-white">Estatísticas básicas</span> — aberturas e interações do cartão, com gráficos por período.</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.08] to-white/[0.02] backdrop-blur-sm p-8 shadow-xl shadow-black/30">
+            <h2 class="text-2xl font-extrabold tracking-tight text-white">Pedir o meu cartão</h2>
+            <p class="mt-2 text-sm leading-6 text-neutral-400">
+              Preenche os teus dados — entramos em contacto e enviamos proposta.
+            </p>
+
+            <% if (error) { %>
+            <div class="mt-6 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+              <%= error %>
+            </div>
+            <% } %>
+
+            <% if (success) { %>
+            <div class="mt-6 rounded-lg border border-teal-400/30 bg-teal-400/10 px-4 py-3 text-sm text-teal-300">
+              <%= success %>
+            </div>
+            <% } %>
+
+            <form action="/pessoal/encomendas" method="POST" enctype="multipart/form-data" class="mt-6 space-y-4">
+              <div>
+                <label class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.15em] text-neutral-400">Nome *</label>
+                <input
+                  type="text"
+                  name="full_name"
+                  value="<%= formData.full_name || '' %>"
+                  placeholder="O teu nome"
+                  class="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-neutral-500 outline-none transition focus:border-teal-400 focus:ring-4 focus:ring-teal-400/10"
+                  required
+                />
+              </div>
+
+              <div class="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.15em] text-neutral-400">Email *</label>
+                  <input
+                    type="email"
+                    name="email"
+                    value="<%= formData.email || '' %>"
+                    placeholder="tu@email.com"
+                    class="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-neutral-500 outline-none transition focus:border-teal-400 focus:ring-4 focus:ring-teal-400/10"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.15em] text-neutral-400">Telemóvel / WhatsApp</label>
+                  <input
+                    type="text"
+                    name="phone"
+                    value="<%= formData.phone || '' %>"
+                    placeholder="+351..."
+                    class="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-neutral-500 outline-none transition focus:border-teal-400 focus:ring-4 focus:ring-teal-400/10"
+                  />
+                </div>
+              </div>
+
+              <div class="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.15em] text-neutral-400">Empresa</label>
+                  <input
+                    type="text"
+                    name="company"
+                    value="<%= formData.company || '' %>"
+                    placeholder="Opcional"
+                    class="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-neutral-500 outline-none transition focus:border-teal-400 focus:ring-4 focus:ring-teal-400/10"
+                  />
+                </div>
+
+                <div>
+                  <label class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.15em] text-neutral-400">Cargo</label>
+                  <input
+                    type="text"
+                    name="role"
+                    value="<%= formData.role || '' %>"
+                    placeholder="Opcional"
+                    class="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-neutral-500 outline-none transition focus:border-teal-400 focus:ring-4 focus:ring-teal-400/10"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.15em] text-neutral-400">Link ou Documento</label>
+                <input
+                  type="text"
+                  name="social_link"
+                  value="<%= formData.social_link || '' %>"
+                  placeholder="https://..."
+                  class="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-neutral-500 outline-none transition focus:border-teal-400 focus:ring-4 focus:ring-teal-400/10"
+                />
+                <p class="mt-1.5 text-xs leading-5 text-neutral-500">
+                  Cola o link do teu <span class="font-semibold text-neutral-300">Website</span>, <span class="font-semibold text-neutral-300">Portfólio</span>, <span class="font-semibold text-neutral-300">Rede Social</span> ou <span class="font-semibold text-neutral-300">Documento</span> (ex: Google Drive).
+                </p>
+              </div>
+
+              <div>
+                <label class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.15em] text-neutral-400">Quantidade</label>
+                <input
+                  type="number"
+                  name="quantity"
+                  min="1"
+                  max="10000"
+                  value="<%= formData.quantity || 1 %>"
+                  class="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-neutral-500 outline-none transition focus:border-teal-400 focus:ring-4 focus:ring-teal-400/10"
+                />
+              </div>
+
+              <div>
+                <label class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.15em] text-neutral-400">Foto do Design (opcional)</label>
+                <input
+                  type="file"
+                  name="attachments"
+                  id="attachments-input"
+                  accept="image/png,image/jpeg,image/webp,image/gif"
+                  multiple
+                  class="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm text-neutral-300 outline-none transition file:mr-4 file:rounded-md file:border-0 file:bg-gradient-to-t file:from-teal-950 file:to-teal-500 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-white focus:border-teal-400"
+                />
+                <p class="mt-1.5 text-xs leading-5 text-neutral-500">
+                  Se já tiveres um <span class="font-semibold text-neutral-300">design em mente</span>, anexa aqui — até 5 imagens, 5MB cada.
+                </p>
+                <div id="attachments-preview" class="mt-3 flex flex-wrap gap-3"></div>
+              </div>
+
+              <div>
+                <label class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.15em] text-neutral-400">Notas/Indicações</label>
+                <textarea
+                  name="notes"
+                  rows="2"
+                  placeholder="Alguma coisa que devamos saber? (opcional)"
+                  class="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-neutral-500 outline-none transition focus:border-teal-400 focus:ring-4 focus:ring-teal-400/10"
+                ><%= formData.notes || '' %></textarea>
+              </div>
+
+              <button class="w-full rounded-full bg-gradient-to-t from-teal-950 to-teal-500 py-3 text-sm font-semibold text-white shadow-lg shadow-teal-900/30 transition hover:to-teal-400">
+                Enviar pedido
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <%- include('partials/public-footer') %>
+
+    <script>
+      const attachmentsInput = document.getElementById('attachments-input');
+      const attachmentsPreview = document.getElementById('attachments-preview');
+
+      attachmentsInput.addEventListener('change', () => {
+        attachmentsPreview.innerHTML = '';
+
+        Array.from(attachmentsInput.files).forEach((file) => {
+          const reader = new FileReader();
+
+          reader.onload = (event) => {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'overflow-hidden rounded-lg border border-white/10';
+
+            const img = document.createElement('img');
+            img.src = event.target.result;
+            img.alt = file.name;
+            img.className = 'h-16 w-16 object-cover';
+
+            wrapper.appendChild(img);
+            attachmentsPreview.appendChild(wrapper);
+          };
+
+          reader.readAsDataURL(file);
+        });
+      });
+    </script>
+  </body>
+</html>

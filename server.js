@@ -2,8 +2,22 @@ require('dotenv').config();
 
 const crypto = require('crypto');
 const express = require('express');
+const multer = require('multer');
 const path = require('path');
 const { createClient } = require('@supabase/supabase-js');
+
+const ATTACHMENTS_BUCKET = 'order-attachments';
+const MAX_ATTACHMENTS = 5;
+const MAX_ATTACHMENT_SIZE_BYTES = 5 * 1024 * 1024;
+const ALLOWED_ATTACHMENT_MIME_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: MAX_ATTACHMENT_SIZE_BYTES, files: MAX_ATTACHMENTS },
+  fileFilter: (req, file, cb) => {
+    cb(null, ALLOWED_ATTACHMENT_MIME_TYPES.has(file.mimetype));
+  }
+});
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
@@ -30,6 +44,8 @@ const ADMIN_COOKIE_VALUE = crypto.createHash('sha256').update(ADMIN_PASSWORD).di
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.set('trust proxy', true);
+
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -119,6 +135,42 @@ function normalizeBoolean(value = '') {
 
 function generateCardToken() {
   return `card-${crypto.randomBytes(4).toString('hex')}`;
+}
+
+function extensionForMimeType(mimeType) {
+  switch (mimeType) {
+    case 'image/jpeg':
+      return 'jpg';
+    case 'image/png':
+      return 'png';
+    case 'image/webp':
+      return 'webp';
+    case 'image/gif':
+      return 'gif';
+    default:
+      return 'bin';
+  }
+}
+
+async function uploadOrderAttachments(files) {
+  const urls = [];
+
+  for (const file of files || []) {
+    const fileName = `${Date.now()}-${crypto.randomBytes(6).toString('hex')}.${extensionForMimeType(file.mimetype)}`;
+
+    const { error } = await supabase.storage
+      .from(ATTACHMENTS_BUCKET)
+      .upload(fileName, file.buffer, { contentType: file.mimetype });
+
+    if (error) {
+      throw error;
+    }
+
+    const { data } = supabase.storage.from(ATTACHMENTS_BUCKET).getPublicUrl(fileName);
+    urls.push(data.publicUrl);
+  }
+
+  return urls;
 }
 
 function getBaseUrl(req) {
@@ -378,11 +430,98 @@ async function renderAdminWithData(req, res, options) {
 }
 
 app.get('/', (req, res) => {
-  res.redirect('/admin');
+  res.render('home');
 });
 
 app.get('/health', (req, res) => {
   res.json({ ok: true });
+});
+
+app.get('/robots.txt', (req, res) => {
+  res.type('text/plain').send('User-agent: *\nDisallow: /admin\n');
+});
+
+app.get('/sobre', (req, res) => {
+  res.render('sobre');
+});
+
+app.get('/parcerias', (req, res) => {
+  res.render('parcerias');
+});
+
+app.get('/pessoal', (req, res) => {
+  res.render('pessoal', {
+    error: null,
+    success: null,
+    formData: {}
+  });
+});
+
+app.post('/pessoal/encomendas', (req, res) => {
+  upload.array('attachments', MAX_ATTACHMENTS)(req, res, async (uploadError) => {
+    const full_name = normalizeInput(req.body.full_name || '');
+    const email = normalizeInput(req.body.email || '');
+    const phone = normalizeInput(req.body.phone || '');
+    const company = normalizeInput(req.body.company || '');
+    const role = normalizeInput(req.body.role || '');
+    const social_link = normalizeInput(req.body.social_link || '');
+    const notes = normalizeInput(req.body.notes || '');
+    const quantity = Math.max(1, Math.min(10000, Number(normalizeInput(req.body.quantity || '1')) || 1));
+
+    const formData = { full_name, email, phone, company, role, social_link, notes, quantity };
+
+    if (uploadError) {
+      const message =
+        uploadError instanceof multer.MulterError && uploadError.code === 'LIMIT_FILE_SIZE'
+          ? `Cada foto tem de ter no maximo ${MAX_ATTACHMENT_SIZE_BYTES / (1024 * 1024)}MB.`
+          : uploadError instanceof multer.MulterError && uploadError.code === 'LIMIT_FILE_COUNT'
+            ? `Podes anexar no maximo ${MAX_ATTACHMENTS} fotos.`
+            : 'So sao aceites imagens (JPG, PNG, WEBP ou GIF).';
+
+      return res.status(400).render('pessoal', { error: message, success: null, formData });
+    }
+
+    if (!full_name || !email) {
+      return res.status(400).render('pessoal', {
+        error: 'Preenche pelo menos o nome e o email.',
+        success: null,
+        formData
+      });
+    }
+
+    try {
+      const attachment_urls = await uploadOrderAttachments(req.files);
+
+      const { error } = await supabase.from('orders').insert({
+        full_name,
+        email,
+        phone: phone || null,
+        company: company || null,
+        role: role || null,
+        social_link: social_link || null,
+        notes: notes || null,
+        quantity,
+        attachment_urls: attachment_urls.length ? attachment_urls : null
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      return res.render('pessoal', {
+        error: null,
+        success: 'Pedido enviado! Vamos entrar em contacto em breve para combinar os detalhes.',
+        formData: {}
+      });
+    } catch (error) {
+      console.error('Create order error:', error);
+      return res.status(400).render('pessoal', {
+        error: 'Nao foi possivel enviar o pedido. Tenta novamente.',
+        success: null,
+        formData
+      });
+    }
+  });
 });
 
 app.get('/go/:slug', async (req, res) => {
