@@ -25,7 +25,19 @@
     color-scheme: dark;
   }
 
+  html {
+    scroll-behavior: smooth;
+    background: #12141a;
+  }
+
   body {
+    /* w-screen (100vw) conta a largura da scrollbar vertical, o que por si so
+       criava uma scrollbar horizontal nesta pagina. "clip" corta o transbordo
+       sem criar um contentor de scroll proprio — "hidden" fazia o overflow-y
+       tornar-se "auto" implicitamente (regra da spec), transformando o body
+       num scroll container separado do html e sobrando ~32px fantasma no
+       fundo da pagina. */
+    overflow-x: clip;
     background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(45, 212, 191, 0.08), transparent), #12141a;
     -webkit-font-smoothing: antialiased;
   }

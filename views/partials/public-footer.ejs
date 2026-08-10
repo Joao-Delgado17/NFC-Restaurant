@@ -1,11 +1,17 @@
-<footer class="border-t border-white/10 py-10">
+<footer class="relative overflow-hidden py-10 <%= (typeof glowFromTop !== 'undefined' && glowFromTop) ? '' : 'border-t border-white/10' %>">
+  <% if (typeof glowFromTop !== 'undefined' && glowFromTop) { %>
+    <div
+      id="footer-glow"
+      class="hidden pointer-events-none absolute inset-x-0 top-0 left-1/2 -z-10 h-32 w-screen -translate-x-1/2"
+      style="background: linear-gradient(to bottom, rgba(255, 255, 255, 0.7), transparent 85%);"
+    ></div>
+  <% } %>
   <div class="mx-auto flex max-w-6xl flex-col gap-4 px-4 text-xs text-neutral-400 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
     <p>&copy; <%= new Date().getFullYear() %> Quick Menu. Todos os direitos reservados.</p>
     <div class="flex gap-6 uppercase tracking-[0.2em]">
-      <!-- TODO: substituir pelos links reais das redes sociais -->
-      <a href="#" class="transition hover:text-teal-400">Instagram</a>
-      <a href="#" class="transition hover:text-teal-400">TikTok</a>
-      <a href="#" class="transition hover:text-teal-400">LinkedIn</a>
+      <a href="https://www.instagram.com/quickmenu._/" target="_blank" rel="noopener" class="transition hover:text-teal-400">Instagram</a>
+      <a href="https://www.tiktok.com/@quickmenu._" target="_blank" rel="noopener" class="transition hover:text-teal-400">TikTok</a>
+      <a href="https://www.facebook.com/profile.php?id=61590106303499" target="_blank" rel="noopener" class="transition hover:text-teal-400">Facebook</a>
     </div>
   </div>
 </footer>

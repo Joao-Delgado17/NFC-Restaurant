@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="pt-PT">
   <head>
-    <%- include('partials/public-head', { title: 'Cartões NFC para o teu negócio e para ti', description: 'Quick Menu: menus digitais por NFC para restaurantes e cartões de visita NFC pessoais.' }) %>
+    <%- include('partials/public-head', { title: 'Cartões NFC para o teu negócio e para ti', description: 'Quick Menu: cartões NFC para restaurantes, bares, salões e outros negócios, e cartões de visita NFC pessoais.' }) %>
   </head>
-  <body class="min-h-screen text-neutral-200">
+  <body class="flex min-h-screen flex-col text-neutral-200">
     <%- include('partials/public-nav') %>
 
-    <main>
+    <main class="flex-1">
       <section class="relative overflow-hidden px-4 pb-24 pt-16 text-center sm:px-6 lg:px-8">
         <div class="pointer-events-none absolute left-1/2 top-6 -z-10 h-56 w-[32rem] -translate-x-1/2 rounded-b-full bg-gradient-to-b from-teal-400/25 to-transparent blur-3xl"></div>
 
@@ -15,37 +15,42 @@
           <p class="text-xs font-semibold uppercase tracking-[0.35em] text-teal-400">Tecnologia NFC</p>
           <span class="h-px w-8 bg-gradient-to-l from-transparent to-teal-500"></span>
         </div>
-        <h1 class="mx-auto max-w-3xl text-5xl font-extrabold leading-tight tracking-tight text-white sm:text-6xl">
-          Um toque. É tudo o que é preciso.
+        <h1 class="mx-auto max-w-[40rem] text-5xl font-extrabold leading-tight tracking-tight text-white sm:text-6xl">
+          Um <span class="text-teal-400">toque</span>. É tudo o que é preciso.
         </h1>
-        <p class="mx-auto mt-6 max-w-xl text-base leading-7 text-neutral-300">
+        <p class="mx-auto mt-6 max-w-[40rem] text-base leading-7 text-neutral-300">
           A Quick Menu cria soluções de cartões NFC — desde menus digitais para restaurantes
           até cartões de visita pessoais — para partilhares informação instantaneamente, sem apps e sem fricção.
         </p>
       </section>
 
-      <section id="restaurantes" class="mx-auto max-w-5xl px-4 pb-8 sm:px-6 lg:px-8">
+      <section id="negocios" class="relative mx-auto max-w-5xl px-4 pb-8 sm:px-6 lg:px-8">
+        <div
+          class="pointer-events-none absolute inset-x-0 bottom-0 left-1/2 -z-10 h-40 w-screen -translate-x-1/2"
+          style="background: linear-gradient(to bottom, transparent, rgba(45, 212, 191, 0.15) 100%);"
+        ></div>
         <div class="grid gap-6 md:grid-cols-2">
-          <div class="rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.08] to-white/[0.02] backdrop-blur-sm p-10 shadow-xl shadow-black/30">
+          <div class="flex flex-col rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.08] to-white/[0.02] p-10 shadow-xl shadow-black/30 backdrop-blur-sm">
             <div class="mb-4 flex items-center gap-3">
               <span class="h-px w-8 bg-teal-500"></span>
-              <p class="text-xs font-semibold uppercase tracking-[0.3em] text-teal-400">Para Restaurantes</p>
+              <p class="text-xs font-semibold uppercase tracking-[0.3em] text-teal-400">Para Negócios</p>
             </div>
-            <h2 class="text-2xl font-extrabold tracking-tight text-white">Quick Menu Restaurantes</h2>
+            <h2 class="text-2xl font-extrabold tracking-tight text-white">Quick Menu Negócios</h2>
             <p class="mt-4 text-sm leading-6 text-neutral-400">
-              Cartões NFC nas mesas que abrem o teu menu digital instantaneamente. Sem QR codes
-              a envelhecer, sem impressões a refazer sempre que mudas os preços.
+              Cartões NFC para restaurantes, bares, salões e outros profissionais com atendimento
+              presencial. Do menu digital a sistemas de marcação e pedidos, sempre ao toque de um cartão.
             </p>
-            <p class="mt-4 text-sm leading-6 text-neutral-500">
-              Design dos cartões pela nossa parceira oficial —
-              <a href="/parcerias" class="font-medium text-teal-400 underline decoration-teal-400/40 underline-offset-2 hover:text-teal-300">conhece a ORYA Creative Studio</a>.
-            </p>
-            <p class="mt-6 text-sm text-neutral-400">
-              Tens um restaurante e queres saber mais? Fala connosco diretamente.
-            </p>
+            <a
+              href="https://www.instagram.com/quickmenu._/"
+              target="_blank"
+              rel="noopener"
+              class="mt-6 self-start rounded-full bg-gradient-to-t from-teal-950 to-teal-500 px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-teal-900/30 transition hover:to-teal-400"
+            >
+              Fala connosco no Instagram
+            </a>
           </div>
 
-          <div class="rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.08] to-white/[0.02] backdrop-blur-sm p-10 shadow-xl shadow-black/30">
+          <div class="flex flex-col rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.08] to-white/[0.02] p-10 shadow-xl shadow-black/30 backdrop-blur-sm">
             <div class="mb-4 flex items-center gap-3">
               <span class="h-px w-8 bg-teal-500"></span>
               <p class="text-xs font-semibold uppercase tracking-[0.3em] text-teal-400">Para Ti</p>
@@ -57,15 +62,734 @@
             </p>
             <a
               href="/pessoal"
-              class="mt-6 inline-flex rounded-full bg-gradient-to-t from-teal-950 to-teal-500 px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-teal-900/30 transition hover:to-teal-400"
+              class="mt-6 self-start rounded-full bg-gradient-to-t from-teal-950 to-teal-500 px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-teal-900/30 transition hover:to-teal-400"
             >
               Conhecer o cartão pessoal
             </a>
           </div>
         </div>
+        <p class="mb-8 mt-6 text-center text-sm text-neutral-500">
+          Design incluído nos dois, feito pela
+          <a href="/parcerias" class="font-medium text-teal-400 underline decoration-teal-400/40 underline-offset-2 hover:text-teal-300">ORYA Creative Studio</a>.
+        </p>
+
+        <div class="flex justify-center">
+          <button
+            type="button"
+            id="reveal-tech-btn"
+            class="group inline-flex flex-col items-center gap-2 text-sm font-semibold tracking-wide text-teal-500/90 transition disabled:cursor-default disabled:opacity-0 hover:text-teal-300"
+          >
+            <span class="soft-bounce inline-flex items-center gap-2">
+              <span class="shine-text">Ver mais sobre a tecnologia NFC</span>
+              <svg class="shine-icon h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </span>
+            <span class="h-px w-16 bg-gradient-to-r from-transparent via-teal-500/70 to-transparent transition-all duration-300 group-hover:w-24 group-hover:via-teal-300"></span>
+          </button>
+        </div>
+      </section>
+
+      <section id="tecnologia" class="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8" style="scroll-margin-top: 6rem;">
+        <div id="tecnologia-content" class="hidden py-28">
+          <div
+            class="pointer-events-none absolute inset-0 left-1/2 -z-10 w-screen -translate-x-1/2"
+            style="background: linear-gradient(to bottom, rgba(45, 212, 191, 0.15) 0%, rgba(255, 255, 255, 0.7) 100%);"
+          ></div>
+          <div class="grid items-center gap-12 lg:grid-cols-2">
+            <div class="text-center lg:text-left">
+              <div class="mb-6 flex items-center justify-center gap-3 lg:justify-start">
+                <span class="h-px w-8 bg-teal-500"></span>
+                <p class="text-xs font-semibold uppercase tracking-[0.3em] text-teal-400">A Tecnologia</p>
+              </div>
+              <h2 class="text-4xl font-extrabold leading-tight tracking-tight text-white sm:text-5xl">
+                Um chip. <span class="text-teal-400">Infinitas</span> possibilidades.
+              </h2>
+              <p class="mx-auto mt-6 max-w-md text-base leading-7 text-neutral-300 lg:mx-0">
+                Dentro de cada cartão Quick Menu vive um chip NFC — a mesma tecnologia dos
+                pagamentos por telemóvel. Sem bateria, sem ligação, sem apps. Encostas o telemóvel
+                e a informação certa abre-se sozinha, em menos de um segundo.
+              </p>
+            </div>
+
+            <div class="relative">
+              <div class="card3d-halo"></div>
+              <div id="card3d-stage" class="card3d-stage"></div>
+            </div>
+          </div>
+        </div>
       </section>
     </main>
 
-    <%- include('partials/public-footer') %>
+    <%- include('partials/public-footer', { glowFromTop: true }) %>
+
+    <style>
+      .soft-bounce {
+        animation: softBounce 2.6s ease-in-out infinite;
+      }
+
+      @keyframes softBounce {
+        0%, 100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(3px);
+        }
+      }
+
+      .shine-text {
+        background: linear-gradient(100deg, rgba(45, 212, 191, 0.95) 35%, #ffffff 50%, rgba(45, 212, 191, 0.95) 65%);
+        background-size: 220% 100%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        animation: shineSweep 2.6s ease-in-out infinite;
+      }
+
+      .shine-icon {
+        animation: shineGlow 2.6s ease-in-out infinite;
+      }
+
+      @keyframes shineSweep {
+        0% {
+          background-position: 140% 0;
+        }
+        60%, 100% {
+          background-position: -40% 0;
+        }
+      }
+
+      @keyframes shineGlow {
+        0%, 100% {
+          filter: brightness(1) drop-shadow(0 0 0 rgba(94, 234, 212, 0));
+        }
+        50% {
+          filter: brightness(1.6) drop-shadow(0 0 4px rgba(94, 234, 212, 0.6));
+        }
+      }
+
+      .reveal-up {
+        opacity: 0;
+        transform: translateY(28px);
+        transition: opacity 0.8s ease, transform 0.8s ease;
+      }
+
+      .reveal-up.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .card3d-halo {
+        position: absolute;
+        inset: -70px;
+        background: radial-gradient(ellipse at center, rgba(94, 234, 212, 0.14) 0%, rgba(94, 234, 212, 0.05) 45%, transparent 72%);
+        filter: blur(60px);
+        pointer-events: none;
+        z-index: -1;
+      }
+
+      .card3d-stage {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 4 / 3;
+        border-radius: 28px;
+        overflow: hidden;
+        background: #0a0c11;
+        box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.07), 0 40px 90px -30px rgba(0, 0, 0, 0.9);
+      }
+
+      .card3d-stage canvas {
+        display: block;
+        width: 100% !important;
+        height: 100% !important;
+      }
+    </style>
+
+    <script>
+      const revealEls = document.querySelectorAll('.reveal-up');
+      const revealObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              revealObserver.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.2 }
+      );
+      revealEls.forEach((el) => revealObserver.observe(el));
+
+    </script>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.165.0/build/three.module.js",
+          "three/addons/": "https://unpkg.com/three@0.165.0/examples/jsm/"
+        }
+      }
+    </script>
+
+    <script type="module">
+      import * as THREE from 'three';
+      import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+      import { Reflector } from 'three/addons/objects/Reflector.js';
+      import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+      import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+      import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+      import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+      import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+
+      const container = document.getElementById('card3d-stage');
+      const revealBtn = document.getElementById('reveal-tech-btn');
+      const techContent = document.getElementById('tecnologia-content');
+      const techSection = document.getElementById('tecnologia');
+
+      // A seccao fica display:none ate ao clique — nao existe espaco nenhum para
+      // dar scroll "como se houvesse algo la em baixo". So passa a existir (e o
+      // cartao 3D so e construido) no momento em que o botao e clicado.
+      let sceneStarted = false;
+
+      function revealTechSection() {
+        if (!techContent) return;
+        revealBtn.disabled = true;
+        techContent.classList.remove('hidden');
+        const footerGlow = document.getElementById('footer-glow');
+        if (footerGlow) footerGlow.classList.remove('hidden');
+        if (techSection) {
+          techSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        if (!sceneStarted && container && window.WebGLRenderingContext) {
+          sceneStarted = true;
+          initTechScene();
+        }
+      }
+
+      if (revealBtn) {
+        revealBtn.addEventListener('click', revealTechSection);
+      }
+
+      function initTechScene() {
+        try {
+          const STAGE_BG = 0x0a0c11;
+
+          const scene = new THREE.Scene();
+          scene.background = new THREE.Color(STAGE_BG);
+          // Neblina suave: da profundidade a abobada sem comer a luz do estudio.
+          scene.fog = new THREE.FogExp2(STAGE_BG, 0.026);
+
+          const camera = new THREE.PerspectiveCamera(30, container.clientWidth / container.clientHeight, 0.1, 60);
+          camera.position.set(0, 1.35, 4.6);
+          camera.lookAt(0, 0.5, 0);
+
+          const renderer = new THREE.WebGLRenderer({ antialias: true });
+          renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+          renderer.setSize(container.clientWidth, container.clientHeight);
+          renderer.shadowMap.enabled = true;
+          renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+          renderer.outputColorSpace = THREE.SRGBColorSpace;
+          renderer.toneMapping = THREE.ACESFilmicToneMapping;
+          renderer.toneMappingExposure = 1.55;
+          container.appendChild(renderer.domElement);
+
+          // Estudio escuro com softboxes: e o reflexo destas luzes nas arestas que faz
+          // um objeto preto ler-se contra um fundo preto.
+          function createStudioEnvTexture() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 1024;
+            canvas.height = 512;
+            const ctx = canvas.getContext('2d');
+
+            const sky = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            sky.addColorStop(0, '#333b47');
+            sky.addColorStop(0.42, '#1c2129');
+            sky.addColorStop(0.54, '#13161c');
+            sky.addColorStop(1, '#0a0c11');
+            ctx.fillStyle = sky;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const softbox = (x, y, rx, ry, rgb, alpha) => {
+              ctx.save();
+              ctx.translate(x, y);
+              ctx.scale(rx, ry);
+              const glow = ctx.createRadialGradient(0, 0, 0, 0, 0, 1);
+              glow.addColorStop(0, 'rgba(' + rgb + ',' + alpha + ')');
+              glow.addColorStop(0.5, 'rgba(' + rgb + ',' + alpha * 0.42 + ')');
+              glow.addColorStop(1, 'rgba(' + rgb + ',0)');
+              ctx.fillStyle = glow;
+              ctx.beginPath();
+              ctx.arc(0, 0, 1, 0, Math.PI * 2);
+              ctx.fill();
+              ctx.restore();
+            };
+
+            softbox(200, 120, 235, 135, '255,251,241', 0.95);
+            softbox(668, 148, 175, 110, '208,226,255', 0.5);
+            softbox(884, 205, 120, 72, '45,212,191', 0.34);
+            softbox(430, 252, 330, 24, '255,255,255', 0.3);
+
+            const texture = new THREE.CanvasTexture(canvas);
+            texture.mapping = THREE.EquirectangularReflectionMapping;
+            texture.colorSpace = THREE.SRGBColorSpace;
+            return texture;
+          }
+
+          const pmremGenerator = new THREE.PMREMGenerator(renderer);
+          const envRenderTarget = pmremGenerator.fromEquirectangular(createStudioEnvTexture());
+          scene.environment = envRenderTarget.texture;
+
+          // Vinheta subtil apenas: escurece levemente os cantos, como uma lente real.
+          // (um passe de grao animado por tempo foi testado e piscava como estatica —
+          // removido, o efeito nao compensava o artefacto.)
+          const cinematicShader = {
+            uniforms: {
+              tDiffuse: { value: null },
+              uTime: { value: 0 }
+            },
+            vertexShader: /* glsl */ `
+              varying vec2 vUv;
+              void main() {
+                vUv = uv;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+              }`,
+            fragmentShader: /* glsl */ `
+              uniform sampler2D tDiffuse;
+              varying vec2 vUv;
+
+              void main() {
+                vec4 texel = texture2D( tDiffuse, vUv );
+                vec2 centered = vUv - 0.5;
+                float vignette = smoothstep( 0.85, 0.22, length( centered ) );
+                texel.rgb *= mix( 0.86, 1.0, vignette );
+                gl_FragColor = texel;
+              }`
+          };
+
+          const composer = new EffectComposer(renderer);
+          composer.addPass(new RenderPass(scene, camera));
+          const bloomPass = new UnrealBloomPass(
+            new THREE.Vector2(container.clientWidth, container.clientHeight),
+            0.24,
+            0.7,
+            0.86
+          );
+          composer.addPass(bloomPass);
+          const cinematicPass = new ShaderPass(cinematicShader);
+          composer.addPass(cinematicPass);
+          composer.addPass(new OutputPass());
+
+          scene.add(new THREE.HemisphereLight(0x3a4250, 0x0d0f14, 0.85));
+
+          // Luz principal, quase a pique para a sombra ficar compacta debaixo do cartao
+          const keyLight = new THREE.SpotLight(0xfff4e4, 14, 18, THREE.MathUtils.degToRad(28), 0.92, 1.4);
+          keyLight.position.set(1.5, 4.3, 1.9);
+          keyLight.target.position.set(0, 0.45, 0);
+          keyLight.castShadow = true;
+          keyLight.shadow.mapSize.set(2048, 2048);
+          keyLight.shadow.camera.near = 1.5;
+          keyLight.shadow.camera.far = 11;
+          keyLight.shadow.radius = 9;
+          keyLight.shadow.bias = -0.0012;
+          scene.add(keyLight);
+          scene.add(keyLight.target);
+
+          const fillLight = new THREE.SpotLight(0xc4d8ff, 5, 16, THREE.MathUtils.degToRad(44), 1, 1.4);
+          fillLight.position.set(-3.1, 2.3, 2.4);
+          fillLight.target.position.set(0, 0.55, 0);
+          scene.add(fillLight);
+          scene.add(fillLight.target);
+
+          // Contraluz: separa a silhueta preta do fundo escuro
+          const rimTeal = new THREE.PointLight(0x2dd4bf, 3, 9, 1.8);
+          rimTeal.position.set(-2.0, 1.5, -2.2);
+          scene.add(rimTeal);
+
+          const rimWarm = new THREE.PointLight(0xffe9cf, 2.6, 9, 1.8);
+          rimWarm.position.set(2.2, 1.3, -2.1);
+          scene.add(rimWarm);
+
+          // Reflector com bordas esbatidas: sem esta alteracao o espelho corta a direito
+          // e ve-se o disco recortado contra o fundo.
+          const fadingReflectorShader = {
+            name: 'FadingReflectorShader',
+            uniforms: {
+              color: { value: null },
+              tDiffuse: { value: null },
+              textureMatrix: { value: null }
+            },
+            vertexShader: /* glsl */ `
+              uniform mat4 textureMatrix;
+              varying vec4 vUv;
+              varying vec2 vFadeUv;
+
+              #include <common>
+              #include <logdepthbuf_pars_vertex>
+
+              void main() {
+                vUv = textureMatrix * vec4( position, 1.0 );
+                vFadeUv = uv;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+                #include <logdepthbuf_vertex>
+              }`,
+            fragmentShader: /* glsl */ `
+              uniform vec3 color;
+              uniform sampler2D tDiffuse;
+              varying vec4 vUv;
+              varying vec2 vFadeUv;
+
+              #include <logdepthbuf_pars_fragment>
+
+              float blendOverlay( float base, float blend ) {
+                return( base < 0.5 ? ( 2.0 * base * blend ) : ( 1.0 - 2.0 * ( 1.0 - base ) * ( 1.0 - blend ) ) );
+              }
+
+              vec3 blendOverlay( vec3 base, vec3 blend ) {
+                return vec3( blendOverlay( base.r, blend.r ), blendOverlay( base.g, blend.g ), blendOverlay( base.b, blend.b ) );
+              }
+
+              void main() {
+                #include <logdepthbuf_fragment>
+                vec4 base = texture2DProj( tDiffuse, vUv );
+                float edge = 1.0 - smoothstep( 0.08, 0.40, distance( vFadeUv, vec2( 0.5 ) ) );
+                gl_FragColor = vec4( blendOverlay( base.rgb, color ), edge * 0.78 );
+                #include <tonemapping_fragment>
+                #include <colorspace_fragment>
+              }`
+          };
+
+          // Abobada de estudio (ciclorama): chao plano que curva para parede, sem canto
+          // visivel. E a queda gradual de luz nesta curva que da a sensacao de profundidade.
+          const covePoints = [new THREE.Vector2(0.001, 0)];
+          const COVE_FLAT = 5.0;
+          const COVE_RADIUS = 3.2;
+          for (let i = 0; i <= 20; i += 1) {
+            const angle = -Math.PI / 2 + (i / 20) * (Math.PI / 2);
+            covePoints.push(
+              new THREE.Vector2(
+                COVE_FLAT + Math.cos(angle) * COVE_RADIUS,
+                COVE_RADIUS + Math.sin(angle) * COVE_RADIUS
+              )
+            );
+          }
+          covePoints.push(new THREE.Vector2(COVE_FLAT + COVE_RADIUS, 7.5));
+
+          const cove = new THREE.Mesh(
+            new THREE.LatheGeometry(covePoints, 128),
+            new THREE.MeshStandardMaterial({
+              color: 0x1f242e,
+              roughness: 0.9,
+              metalness: 0,
+              side: THREE.BackSide,
+              envMapIntensity: 1.15
+            })
+          );
+          cove.receiveShadow = true;
+          scene.add(cove);
+
+          const floorGeometry = new THREE.CircleGeometry(4.4, 128);
+          const reflector = new Reflector(floorGeometry, {
+            clipBias: 0.003,
+            textureWidth: container.clientWidth * Math.min(window.devicePixelRatio, 2),
+            textureHeight: container.clientHeight * Math.min(window.devicePixelRatio, 2),
+            color: 0x545a64,
+            shader: fadingReflectorShader
+          });
+          reflector.material.transparent = true;
+          reflector.rotation.x = -Math.PI / 2;
+          reflector.position.y = 0.001;
+          reflector.renderOrder = 1;
+          scene.add(reflector);
+
+          const shadowCatcher = new THREE.Mesh(
+            new THREE.CircleGeometry(4.4, 96),
+            new THREE.ShadowMaterial({ opacity: 0.45 })
+          );
+          shadowCatcher.rotation.x = -Math.PI / 2;
+          shadowCatcher.position.y = 0.004;
+          shadowCatcher.receiveShadow = true;
+          shadowCatcher.renderOrder = 2;
+          scene.add(shadowCatcher);
+
+          // Sombra de contacto pintada a mao: e o que assenta mesmo o cartao no chao
+          function createContactShadowTexture() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 256;
+            canvas.height = 256;
+            const ctx = canvas.getContext('2d');
+            const gradient = ctx.createRadialGradient(128, 128, 0, 128, 128, 128);
+            gradient.addColorStop(0, 'rgba(0,0,0,0.8)');
+            gradient.addColorStop(0.4, 'rgba(0,0,0,0.38)');
+            gradient.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 256, 256);
+            return new THREE.CanvasTexture(canvas);
+          }
+
+          const contactShadow = new THREE.Mesh(
+            new THREE.PlaneGeometry(2.7, 1.3),
+            new THREE.MeshBasicMaterial({
+              map: createContactShadowTexture(),
+              transparent: true,
+              depthWrite: false,
+              opacity: 0.7
+            })
+          );
+          contactShadow.rotation.x = -Math.PI / 2;
+          contactShadow.position.set(0, 0.012, 0.05);
+          contactShadow.renderOrder = 3;
+          scene.add(contactShadow);
+
+          const cardGroup = new THREE.Group();
+          cardGroup.position.y = 0.76;
+          scene.add(cardGroup);
+
+          const cardWidth = 1.7;
+          const cardHeight = cardWidth * (54 / 85.6);
+          const cardDepth = 0.055;
+
+          // Micro-variacao na rugosidade: nenhuma superficie real e uniforme, e e essa
+          // uniformidade que denuncia um render.
+          function createImperfectionTexture() {
+            const noise = document.createElement('canvas');
+            noise.width = 96;
+            noise.height = 96;
+            const noiseCtx = noise.getContext('2d');
+            const imageData = noiseCtx.createImageData(96, 96);
+            for (let i = 0; i < imageData.data.length; i += 4) {
+              const value = 152 + Math.random() * 46;
+              imageData.data[i] = value;
+              imageData.data[i + 1] = value;
+              imageData.data[i + 2] = value;
+              imageData.data[i + 3] = 255;
+            }
+            noiseCtx.putImageData(imageData, 0, 0);
+
+            const canvas = document.createElement('canvas');
+            canvas.width = 512;
+            canvas.height = 512;
+            const ctx = canvas.getContext('2d');
+            ctx.imageSmoothingEnabled = true;
+            ctx.drawImage(noise, 0, 0, 512, 512);
+
+            const texture = new THREE.CanvasTexture(canvas);
+            texture.wrapS = THREE.RepeatWrapping;
+            texture.wrapT = THREE.RepeatWrapping;
+            texture.repeat.set(2, 1.4);
+            return texture;
+          }
+
+          const imperfectionMap = createImperfectionTexture();
+
+          // Preto mate, mas visivel: side e front com a mesma rugosidade/verniz para
+          // nenhuma face ler-se mais brilhante que a outra, com reflexo suficiente
+          // para a textura e o ambiente do estudio aparecerem.
+          const sideMat = new THREE.MeshPhysicalMaterial({
+            color: 0x1c1c1f,
+            roughness: 0.55,
+            metalness: 0,
+            clearcoat: 0.15,
+            clearcoatRoughness: 0.6,
+            envMapIntensity: 0.9
+          });
+          const frontMat = new THREE.MeshPhysicalMaterial({
+            color: 0xffffff,
+            roughness: 0.55,
+            roughnessMap: imperfectionMap,
+            metalness: 0,
+            clearcoat: 0.15,
+            clearcoatRoughness: 0.6,
+            envMapIntensity: 0.9
+          });
+
+          // O raio do bisel tem de ser menor que metade da espessura do cartao
+          // (cardDepth / 2 = 0.0275). Um raio maior invalida a geometria e cria uma
+          // crista visivel a volta de todo o cartao — essa era a "borda" persistente.
+          const cardGeometry = new RoundedBoxGeometry(cardWidth, cardHeight, cardDepth, 4, 0.014);
+          const card = new THREE.Mesh(cardGeometry, [sideMat, sideMat, sideMat, sideMat, frontMat, sideMat]);
+          card.castShadow = true;
+          card.receiveShadow = true;
+          cardGroup.add(card);
+
+          const logoImage = new Image();
+          logoImage.crossOrigin = 'anonymous';
+          logoImage.onload = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = 2048;
+            canvas.height = 1292;
+            const ctx = canvas.getContext('2d');
+            const cw = canvas.width;
+            const ch = canvas.height;
+
+            // Preto mate, so com uma variacao minima para nao ficar chapado
+            const baseGradient = ctx.createLinearGradient(0, 0, cw * 0.7, ch);
+            baseGradient.addColorStop(0, '#242427');
+            baseGradient.addColorStop(0.55, '#18181a');
+            baseGradient.addColorStop(1, '#1e1e20');
+            ctx.fillStyle = baseGradient;
+            ctx.fillRect(0, 0, cw, ch);
+
+            // Linhas finas de circuito — a bobina de antena que existe dentro de um
+            // cartao NFC a serio, gravada de forma discreta. Decorativo, nao um cartao
+            // bancario: sem chip dourado, sem simbolo contactless.
+            ctx.save();
+            ctx.strokeStyle = 'rgba(255,255,255,0.07)';
+            ctx.lineWidth = cw * 0.0015;
+            [0.085, 0.12, 0.155, 0.19].forEach((inset, i) => {
+              const x = cw * inset;
+              const y = ch * inset;
+              const w = cw * (1 - inset * 2);
+              const h = ch * (1 - inset * 2);
+              const r = Math.min(w, h) * 0.1;
+              ctx.globalAlpha = 0.65 - i * 0.13;
+              ctx.beginPath();
+              if (typeof ctx.roundRect === 'function') {
+                ctx.roundRect(x, y, w, h, r);
+              } else {
+                ctx.rect(x, y, w, h);
+              }
+              ctx.stroke();
+            });
+            ctx.globalAlpha = 1;
+
+            // Pequenos traços tipo PCB nos cantos, para quebrar a simetria da bobina.
+            const trace = (points) => {
+              ctx.beginPath();
+              points.forEach(([px, py], i) => (i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py)));
+              ctx.stroke();
+            };
+            ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+            ctx.lineWidth = cw * 0.0013;
+            ctx.lineCap = 'round';
+            trace([[cw * 0.06, ch * 0.82], [cw * 0.06, ch * 0.72], [cw * 0.11, ch * 0.72]]);
+            trace([[cw * 0.94, ch * 0.16], [cw * 0.94, ch * 0.24], [cw * 0.885, ch * 0.24]]);
+            ctx.restore();
+
+            // Logo centrado. Sem chip, sem contactless: nao e um cartao bancario.
+            const scale = Math.min((cw * 0.58) / logoImage.width, (ch * 0.44) / logoImage.height);
+            const w = logoImage.width * scale;
+            const h = logoImage.height * scale;
+            ctx.drawImage(logoImage, (cw - w) / 2, (ch - h) / 2, w, h);
+
+            const texture = new THREE.CanvasTexture(canvas);
+            texture.colorSpace = THREE.SRGBColorSpace;
+            texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+            frontMat.map = texture;
+            // Emissivo muito baixo: o logo nunca desaparece nas zonas de sombra,
+            // mas o preto a volta continua preto.
+            frontMat.emissive = new THREE.Color(0xffffff);
+            frontMat.emissiveMap = texture;
+            frontMat.emissiveIntensity = 0.07;
+            frontMat.needsUpdate = true;
+          };
+          logoImage.src = '/logo-horizontal.png';
+
+          // Pose de repouso: diagonal nos dois eixos (yaw + pitch + um travo de roll),
+          // como um cartao pousado obliquamente em cima de uma mesa — nao so virado
+          // de lado. Angulos moderados de proposito para a ponta de baixo nao atravessar
+          // o chao.
+          const BASE_YAW = THREE.MathUtils.degToRad(-25);
+          const BASE_PITCH = THREE.MathUtils.degToRad(-6);
+          const BASE_ROLL = THREE.MathUtils.degToRad(2);
+          const baseQuaternion = new THREE.Quaternion().setFromEuler(
+            new THREE.Euler(BASE_PITCH, BASE_YAW, BASE_ROLL)
+          );
+
+          // Eixo diagonal (nao um Y puro) usado no giro de entrada e no hover, para o
+          // movimento parecer um tombo e nao um pedestal de loja a girar.
+          const spinAxis = new THREE.Vector3(0.35, 1, 0.12).normalize();
+          const tiltAxis = new THREE.Vector3(1, 0, 0);
+
+          // So duas posicoes: estacionado em cima (fora de vista) e pousado em baixo.
+          // A entrada anima uma vez entre as duas — desce e da uma volta — e fica.
+          // Nao ha giro continuo ligado ao scroll: era isso que deixava o cartao numa
+          // posicao aleatoria (por vezes de costas) consoante onde o utilizador parava.
+          const ENTRY_DROP = 0.85;
+          const ENTRY_SPIN = Math.PI * 2;
+          const ENTRY_DURATION = 2000;
+
+          let targetTilt = 0;
+          let currentTilt = 0;
+          let targetHoverSpin = 0;
+          let currentHoverSpin = 0;
+          let isHovering = false;
+          // initTechScene() so corre no clique do botao, por isso a entrada arranca
+          // logo aqui — nao ha estado "estacionado" a espera de scroll.
+          let entranceStartTime = performance.now();
+          let entranceDone = false;
+
+          container.addEventListener('mousemove', (event) => {
+            isHovering = true;
+            const rect = container.getBoundingClientRect();
+            const x = (event.clientX - rect.left) / rect.width - 0.5;
+            const y = (event.clientY - rect.top) / rect.height - 0.5;
+            targetHoverSpin = x * 0.9;
+            targetTilt = y * -0.35;
+          });
+
+          container.addEventListener('mouseleave', () => {
+            isHovering = false;
+            targetTilt = 0;
+          });
+
+          function handleResize() {
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+            renderer.setSize(width, height);
+            composer.setSize(width, height);
+          }
+
+          window.addEventListener('resize', handleResize);
+
+          const clock = new THREE.Clock();
+          const cardBaseY = cardGroup.position.y;
+          const spinQuat = new THREE.Quaternion();
+          const tiltQuat = new THREE.Quaternion();
+
+          function animate(now) {
+            requestAnimationFrame(animate);
+            const elapsed = clock.getElapsedTime();
+            const idleSway = Math.sin(elapsed * 0.6) * 0.012;
+            const idleBobY = Math.sin(elapsed * 0.8) * 0.022;
+            // Depois da entrada, se ninguem estiver a mexer no cartao, deixa-o a
+            // balancar sozinho lentamente — chama a atencao sem ser distrativo.
+            if (entranceDone && !isHovering) {
+              targetHoverSpin = Math.sin(elapsed * 0.15) * 0.3;
+            }
+            currentHoverSpin += (targetHoverSpin - currentHoverSpin) * 0.08;
+            currentTilt += (targetTilt - currentTilt) * 0.08;
+
+            if (!entranceDone) {
+              const t = Math.min((now - entranceStartTime) / ENTRY_DURATION, 1);
+              const eased = 1 - Math.pow(1 - t, 3);
+              const entrySpin = THREE.MathUtils.lerp(ENTRY_SPIN, 0, eased);
+              // O balanco idle (idleBobY) entra aqui tambem, com o mesmo elapsed usado
+              // na fase de repouso — sem isto, no instante em que a entrada termina o
+              // cartao "salta" para a fase do seno em que a bob ja vai, em vez de
+              // continuar do sitio onde a entrada o deixou.
+              cardGroup.position.y = THREE.MathUtils.lerp(cardBaseY + ENTRY_DROP, cardBaseY, eased) + idleBobY * eased;
+              spinQuat.setFromAxisAngle(spinAxis, entrySpin + currentHoverSpin);
+              tiltQuat.setFromAxisAngle(tiltAxis, currentTilt + idleSway * eased);
+              cardGroup.quaternion.copy(baseQuaternion).multiply(spinQuat).multiply(tiltQuat);
+              if (t >= 1) entranceDone = true;
+            } else {
+              cardGroup.position.y = cardBaseY + idleBobY;
+              spinQuat.setFromAxisAngle(spinAxis, currentHoverSpin);
+              tiltQuat.setFromAxisAngle(tiltAxis, currentTilt + idleSway);
+              cardGroup.quaternion.copy(baseQuaternion).multiply(spinQuat).multiply(tiltQuat);
+            }
+
+            cinematicPass.uniforms.uTime.value = elapsed;
+            composer.render();
+          }
+
+          requestAnimationFrame(animate);
+        } catch (err) {
+          console.error('Card 3D scene failed to initialise:', err);
+        }
+      }
+    </script>
   </body>
 </html>
