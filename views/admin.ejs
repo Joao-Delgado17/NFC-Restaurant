@@ -539,13 +539,21 @@
         </div>
       </section>
 
+      <%
+        // JSON.stringify nao escapa "<", por isso um nome de restaurante tipo
+        // </script><script>... conseguia partir para fora desta tag. Trocar
+        // "<" por < neutraliza isso sem mudar o valor em JS.
+        function safeJson(value) {
+          return JSON.stringify(value).replace(/</g, '\\u003c');
+        }
+      %>
       <script>
-        const restaurantHistoryLabels = <%- JSON.stringify(selectedLinkHistory.labels || []) %>;
-        const restaurantHistoryValues = <%- JSON.stringify(selectedLinkHistory.values || []) %>;
-        const cardHistoryLabels = <%- JSON.stringify(selectedCardHistory.labels || []) %>;
-        const cardHistoryValues = <%- JSON.stringify(selectedCardHistory.values || []) %>;
-        const selectedRestaurantName = <%- JSON.stringify(selectedLink ? selectedLink.restaurant_name : 'Restaurante') %>;
-        const selectedCardName = <%- JSON.stringify(selectedCard ? (selectedCard.label || selectedCard.public_token) : 'Cartão') %>;
+        const restaurantHistoryLabels = <%- safeJson(selectedLinkHistory.labels || []) %>;
+        const restaurantHistoryValues = <%- safeJson(selectedLinkHistory.values || []) %>;
+        const cardHistoryLabels = <%- safeJson(selectedCardHistory.labels || []) %>;
+        const cardHistoryValues = <%- safeJson(selectedCardHistory.values || []) %>;
+        const selectedRestaurantName = <%- safeJson(selectedLink ? selectedLink.restaurant_name : 'Restaurante') %>;
+        const selectedCardName = <%- safeJson(selectedCard ? (selectedCard.label || selectedCard.public_token) : 'Cartão') %>;
 
         function renderHistoryChart(elementId, labels, values, datasetLabel, color) {
           const chartCanvas = document.getElementById(elementId);

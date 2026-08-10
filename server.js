@@ -4,12 +4,42 @@ const crypto = require('crypto');
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 const { createClient } = require('@supabase/supabase-js');
 
 const ATTACHMENTS_BUCKET = 'order-attachments';
 const MAX_ATTACHMENTS = 5;
 const MAX_ATTACHMENT_SIZE_BYTES = 5 * 1024 * 1024;
 const ALLOWED_ATTACHMENT_MIME_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
+
+// Assinaturas dos primeiros bytes de cada formato — o Content-Type do multer
+// vem do browser e pode ser falsificado, isto confirma o ficheiro a serio.
+const FILE_SIGNATURES = [
+  { mime: 'image/jpeg', bytes: [0xff, 0xd8, 0xff] },
+  { mime: 'image/png', bytes: [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a] },
+  { mime: 'image/gif', bytes: [0x47, 0x49, 0x46, 0x38] },
+  { mime: 'image/webp', bytes: [0x52, 0x49, 0x46, 0x46], offset: 0, webp: true }
+];
+
+function matchesDeclaredType(buffer, declaredMime) {
+  if (!buffer || buffer.length < 4) {
+    return false;
+  }
+
+  return FILE_SIGNATURES.some((sig) => {
+    if (sig.mime !== declaredMime) {
+      return false;
+    }
+    if (sig.webp) {
+      return (
+        buffer.slice(0, 4).equals(Buffer.from(sig.bytes)) &&
+        buffer.slice(8, 12).toString('ascii') === 'WEBP'
+      );
+    }
+    return buffer.slice(0, sig.bytes.length).equals(Buffer.from(sig.bytes));
+  });
+}
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -45,6 +75,21 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.set('trust proxy', true);
 
+// CSP fica desligado porque a homepage carrega Three.js, Tailwind e Google
+// Fonts a partir de CDNs externos — os outros headers (HSTS, X-Frame-Options,
+// nosniff, etc.) ja dao proteccao real sem precisar de afinar uma allowlist.
+app.use(helmet({ contentSecurityPolicy: false }));
+
+// Sem isto dava para tentar passwords sem limite contra /admin/login — 20
+// tentativas por 15 min por IP chega para uso normal e trava brute-force.
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: 'Demasiadas tentativas. Tenta novamente daqui a uns minutos.'
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(express.urlencoded({ extended: true }));
@@ -69,9 +114,23 @@ function parseCookies(cookieHeader = '') {
     }, {});
 }
 
+function timingSafeStringEqual(a = '', b = '') {
+  const bufferA = Buffer.from(String(a));
+  const bufferB = Buffer.from(String(b));
+
+  // Os buffers tem de ter o mesmo tamanho para o timingSafeEqual nao rebentar;
+  // isto por si so nao reintroduz o timing leak porque o tamanho do valor
+  // esperado (hash/password) nunca e segredo.
+  if (bufferA.length !== bufferB.length) {
+    return false;
+  }
+
+  return crypto.timingSafeEqual(bufferA, bufferB);
+}
+
 function isAdminAuthenticated(req) {
   const cookies = parseCookies(req.headers.cookie);
-  return Boolean(ADMIN_PASSWORD) && cookies[ADMIN_COOKIE] === ADMIN_COOKIE_VALUE;
+  return Boolean(ADMIN_PASSWORD) && timingSafeStringEqual(cookies[ADMIN_COOKIE] || '', ADMIN_COOKIE_VALUE);
 }
 
 function requireAdmin(req, res, next) {
@@ -470,6 +529,16 @@ app.post('/pessoal/encomendas', (req, res) => {
 
     const formData = { full_name, email, phone, company, role, social_link, notes, quantity };
 
+    // Honeypot: campo escondido em CSS que só bots preenchem. Se vier
+    // preenchido, fingimos sucesso sem gravar nada nem gastar upload/DB.
+    if (normalizeInput(req.body.website || '')) {
+      return res.render('pessoal', {
+        error: null,
+        success: 'Pedido enviado! Vamos entrar em contacto em breve para combinar os detalhes.',
+        formData: {}
+      });
+    }
+
     if (uploadError) {
       const message =
         uploadError instanceof multer.MulterError && uploadError.code === 'LIMIT_FILE_SIZE'
@@ -484,6 +553,18 @@ app.post('/pessoal/encomendas', (req, res) => {
     if (!full_name || !email) {
       return res.status(400).render('pessoal', {
         error: 'Preenche pelo menos o nome e o email.',
+        success: null,
+        formData
+      });
+    }
+
+    const filesWithSpoofedType = (req.files || []).filter(
+      (file) => !matchesDeclaredType(file.buffer, file.mimetype)
+    );
+
+    if (filesWithSpoofedType.length > 0) {
+      return res.status(400).render('pessoal', {
+        error: 'Um dos ficheiros nao parece ser uma imagem valida. Tenta outra foto.',
         success: null,
         formData
       });
@@ -603,10 +684,10 @@ app.get('/admin', async (req, res) => {
   }
 });
 
-app.post('/admin/login', (req, res) => {
+app.post('/admin/login', loginLimiter, (req, res) => {
   const password = normalizeInput(req.body.password || '');
 
-  if (!ADMIN_PASSWORD || password !== ADMIN_PASSWORD) {
+  if (!ADMIN_PASSWORD || !timingSafeStringEqual(password, ADMIN_PASSWORD)) {
     return renderAdmin(req, res, {
       authenticated: false,
       error: 'Password invalida.'
@@ -616,7 +697,7 @@ app.post('/admin/login', (req, res) => {
   res.cookie(ADMIN_COOKIE, ADMIN_COOKIE_VALUE, {
     httpOnly: true,
     sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production',
+    secure: req.secure,
     maxAge: 1000 * 60 * 60 * 12
   });
 

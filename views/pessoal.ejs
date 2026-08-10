@@ -95,6 +95,14 @@
             <% } %>
 
             <form action="/pessoal/encomendas" method="POST" enctype="multipart/form-data" class="mt-6 space-y-4">
+              <input
+                type="text"
+                name="website"
+                tabindex="-1"
+                autocomplete="off"
+                class="absolute left-[-9999px] h-0 w-0 opacity-0"
+                aria-hidden="true"
+              />
               <div>
                 <label class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.15em] text-neutral-400">Nome *</label>
                 <input
