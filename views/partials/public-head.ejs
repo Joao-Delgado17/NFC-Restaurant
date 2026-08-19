@@ -38,7 +38,26 @@
        num scroll container separado do html e sobrando ~32px fantasma no
        fundo da pagina. */
     overflow-x: clip;
-    background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(45, 212, 191, 0.08), transparent), #12141a;
+    /* Fade vertical continuo pela pagina toda (nao um por seccao), escuro no
+       topo e a clarear ligeiramente para lá do meio — depois a onda SVG no
+       topo do footer (public-footer.ejs) e que faz o salto final para
+       branco. As duas coisas juntas: o fade da a sensacao continua ao
+       scrollar, a onda da a forma organica mesmo em cima do footer.
+       (Tem de ser vertical, nao diagonal: um angulo em 135deg cria linhas de
+       iso-cor inclinadas — numa pagina muito mais alta que larga isso faz o
+       lado esquerdo e direito do ecrã mostrarem tons ligeiramente diferentes
+       à mesma altura, o que se via como uma "costura" suja mesmo por cima do
+       footer.) */
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(45, 212, 191, 0.08), transparent),
+      linear-gradient(
+        180deg,
+        #12141a 0%,
+        #12141a 55%,
+        #1b1f28 75%,
+        #262c37 90%,
+        #2f3542 100%
+      );
     -webkit-font-smoothing: antialiased;
   }
 </style>

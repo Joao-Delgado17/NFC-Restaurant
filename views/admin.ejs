@@ -47,6 +47,33 @@
       .dot-offline {
         background-color: #64748b;
       }
+
+      .status-order-pending {
+        background: rgba(217, 119, 6, 0.1);
+        border-color: #d97706;
+      }
+
+      .status-order-contacted {
+        background: rgba(59, 130, 246, 0.1);
+        border-color: #3b82f6;
+      }
+
+      .status-order-done {
+        background: rgba(16, 185, 129, 0.1);
+        border-color: #10b981;
+      }
+
+      .dot-order-pending {
+        background-color: #d97706;
+      }
+
+      .dot-order-contacted {
+        background-color: #3b82f6;
+      }
+
+      .dot-order-done {
+        background-color: #10b981;
+      }
     </style>
   </head>
   <body class="min-h-screen text-slate-100">
@@ -91,27 +118,44 @@
         </div>
       </div>
       <% } else { %>
-      <div class="mb-8 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+      <div class="mb-6 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <p class="mb-3 inline-flex rounded-full bg-teal-500/20 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-teal-300">
-            Dashboard Analytics
+            <%= activeView === 'orders' ? 'Gestão de Pedidos' : 'Dashboard Analytics' %>
           </p>
           <h1 class="text-4xl font-black tracking-tight text-white">NFC Restaurante</h1>
           <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-400">
-            Visualiza o status em tempo real dos teus restaurantes com estatísticas diárias por cartão.
+            <%= activeView === 'orders'
+              ? 'Pedidos de cartões pessoais recebidos pelo formulário público.'
+              : 'Visualiza o status em tempo real dos teus restaurantes com estatísticas diárias por cartão.' %>
           </p>
         </div>
 
-        <div class="flex items-center gap-3">
-          <div class="rounded-xl bg-slate-800/60 px-4 py-3 text-xs text-slate-300 backdrop-blur border border-slate-700/50">
-            <span class="text-slate-500">Link:</span> <span class="font-mono text-teal-300"><%= baseUrl %>/go/slug</span>
-          </div>
-          <form action="/admin/logout" method="POST">
-            <button class="btn btn-sm rounded-full border-0 bg-slate-700 text-slate-200 hover:bg-slate-600">
-              Logout
-            </button>
-          </form>
-        </div>
+        <form action="/admin/logout" method="POST">
+          <button class="btn btn-sm rounded-full border-0 bg-slate-700 text-slate-200 hover:bg-slate-600">
+            Logout
+          </button>
+        </form>
+      </div>
+
+      <div class="mb-8 inline-flex flex-wrap gap-1 rounded-full border border-slate-700/50 bg-slate-800/40 p-1 backdrop-blur">
+        <a
+          href="/admin?view=restaurants"
+          class="rounded-full px-5 py-2.5 text-sm font-semibold transition <%= activeView === 'restaurants' ? 'bg-teal-600 text-white shadow' : 'text-slate-300 hover:bg-slate-700/60 hover:text-white' %>"
+        >
+          Restaurantes
+        </a>
+        <a
+          href="/admin?view=orders"
+          class="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition <%= activeView === 'orders' ? 'bg-teal-600 text-white shadow' : 'text-slate-300 hover:bg-slate-700/60 hover:text-white' %>"
+        >
+          Pedidos Pessoais
+          <% if (orderCounts.pending > 0) { %>
+          <span class="inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-amber-500 px-1.5 text-xs font-bold text-white">
+            <%= orderCounts.pending %>
+          </span>
+          <% } %>
+        </a>
       </div>
 
       <% if (error) { %>
@@ -125,6 +169,183 @@
         <span><%= success %></span>
       </div>
       <% } %>
+
+      <% if (activeView === 'orders') { %>
+
+      <section class="mb-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div class="rounded-xl border border-slate-700/50 bg-slate-800/40 p-5 backdrop-blur">
+          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Pendentes</p>
+          <p class="mt-3 text-3xl font-black text-amber-400"><%= orderCounts.pending %></p>
+          <p class="mt-2 text-xs text-slate-500">A aguardar contacto</p>
+        </div>
+        <div class="rounded-xl border border-slate-700/50 bg-slate-800/40 p-5 backdrop-blur">
+          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Cartões Pendentes</p>
+          <p class="mt-3 text-3xl font-black text-amber-400"><%= orderCounts.pendingCardsQuantity %></p>
+          <p class="mt-2 text-xs text-slate-500">Unidades por confirmar</p>
+        </div>
+        <div class="rounded-xl border border-slate-700/50 bg-slate-800/40 p-5 backdrop-blur">
+          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Últimos 7 Dias</p>
+          <p class="mt-3 text-3xl font-black text-teal-300"><%= orderCounts.last7Days %></p>
+          <p class="mt-2 text-xs text-slate-500">Novos pedidos</p>
+        </div>
+        <div class="rounded-xl border border-slate-700/50 bg-slate-800/40 p-5 backdrop-blur">
+          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Total</p>
+          <p class="mt-3 text-3xl font-black text-emerald-400"><%= orderCounts.all %></p>
+          <p class="mt-2 text-xs text-slate-500">Pedidos recebidos</p>
+        </div>
+      </section>
+
+      <section class="rounded-2xl border border-slate-700/50 bg-slate-800/40 p-6 backdrop-blur">
+        <div class="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <p class="mb-3 inline-flex rounded-full bg-teal-500/20 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-teal-300">
+              Formulário Pessoal
+            </p>
+            <h2 class="text-3xl font-black tracking-tight text-white">Pedidos de cartão</h2>
+            <p class="mt-2 text-sm leading-6 text-slate-400">
+              Pedidos enviados pelo formulário em /pessoal.
+            </p>
+          </div>
+
+          <div class="flex flex-wrap gap-2">
+            <a
+              href="/admin?view=orders&orders=pending"
+              class="btn btn-sm rounded-full border-0 <%= orderStatusFilter === 'pending' ? 'bg-amber-600 text-white hover:bg-amber-700' : 'bg-slate-700 text-slate-200 hover:bg-slate-600' %>"
+            >
+              Pendentes (<%= orderCounts.pending %>)
+            </a>
+            <a
+              href="/admin?view=orders&orders=contacted"
+              class="btn btn-sm rounded-full border-0 <%= orderStatusFilter === 'contacted' ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-slate-700 text-slate-200 hover:bg-slate-600' %>"
+            >
+              Contactados (<%= orderCounts.contacted %>)
+            </a>
+            <a
+              href="/admin?view=orders&orders=done"
+              class="btn btn-sm rounded-full border-0 <%= orderStatusFilter === 'done' ? 'bg-emerald-600 text-white hover:bg-emerald-700' : 'bg-slate-700 text-slate-200 hover:bg-slate-600' %>"
+            >
+              Concluídos (<%= orderCounts.done %>)
+            </a>
+            <a
+              href="/admin?view=orders&orders=all"
+              class="btn btn-sm rounded-full border-0 <%= orderStatusFilter === 'all' ? 'bg-teal-600 text-white hover:bg-teal-700' : 'bg-slate-700 text-slate-200 hover:bg-slate-600' %>"
+            >
+              Todos (<%= orderCounts.all %>)
+            </a>
+          </div>
+        </div>
+
+        <%
+          function relativeTimeLabel(dateValue) {
+            const diffMs = Date.now() - new Date(dateValue).getTime();
+            const diffMinutes = Math.floor(diffMs / 60000);
+
+            if (diffMinutes < 1) return 'agora mesmo';
+            if (diffMinutes < 60) return `há ${diffMinutes} min`;
+
+            const diffHours = Math.floor(diffMinutes / 60);
+            if (diffHours < 24) return `há ${diffHours}h`;
+
+            const diffDays = Math.floor(diffHours / 24);
+            if (diffDays < 7) return `há ${diffDays}d`;
+
+            return `há ${Math.floor(diffDays / 7)}sem`;
+          }
+        %>
+
+        <% if (!orders.length) { %>
+        <div class="rounded-xl border border-dashed border-slate-600 bg-slate-900/50 p-12 text-center">
+          <p class="text-sm text-slate-400">Sem pedidos nesta categoria.</p>
+        </div>
+        <% } else { %>
+        <div class="space-y-4">
+          <% orders.forEach((order) => { %>
+          <div class="status-order-<%= order.status %> rounded-xl border-2 p-5">
+            <div class="mb-4 flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <div class="flex items-center gap-2">
+                  <h3 class="text-lg font-bold text-white"><%= order.full_name %></h3>
+                  <span class="dot-order-<%= order.status %> h-2.5 w-2.5 rounded-full"></span>
+                </div>
+                <p class="mt-1 text-xs text-slate-400">
+                  <%= new Date(order.created_at).toLocaleString('pt-PT', { timeZone: appTimezone, dateStyle: 'short', timeStyle: 'short' }) %>
+                  · <span class="font-semibold text-slate-300"><%= relativeTimeLabel(order.created_at) %></span>
+                </p>
+              </div>
+              <span class="rounded-full bg-black/30 px-3 py-1 text-xs font-semibold text-slate-200">
+                <%= order.quantity %> <%= order.quantity === 1 ? 'cartão' : 'cartões' %>
+              </span>
+            </div>
+
+            <div class="grid gap-3 sm:grid-cols-2">
+              <div class="rounded-lg bg-black/30 p-3">
+                <p class="text-xs text-slate-400">Email</p>
+                <a href="mailto:<%= order.email %>" class="mt-1 block truncate text-sm font-semibold text-teal-300 hover:text-teal-200"><%= order.email %></a>
+              </div>
+              <% if (order.phone) { %>
+              <div class="rounded-lg bg-black/30 p-3">
+                <p class="text-xs text-slate-400">Telefone</p>
+                <a href="tel:<%= order.phone %>" class="mt-1 block text-sm font-semibold text-teal-300 hover:text-teal-200"><%= order.phone %></a>
+              </div>
+              <% } %>
+              <% if (order.company || order.role) { %>
+              <div class="rounded-lg bg-black/30 p-3">
+                <p class="text-xs text-slate-400">Empresa / Cargo</p>
+                <p class="mt-1 text-sm text-slate-200"><%= [order.company, order.role].filter(Boolean).join(' — ') %></p>
+              </div>
+              <% } %>
+              <% if (order.social_link) { %>
+              <div class="rounded-lg bg-black/30 p-3">
+                <p class="text-xs text-slate-400">Link</p>
+                <a href="<%= order.social_link %>" target="_blank" rel="noreferrer" class="mt-1 block truncate text-sm font-semibold text-teal-300 hover:text-teal-200"><%= order.social_link %></a>
+              </div>
+              <% } %>
+            </div>
+
+            <% if (order.notes) { %>
+            <div class="mt-3 rounded-lg bg-black/30 p-3">
+              <p class="text-xs text-slate-400">Notas</p>
+              <p class="mt-1 whitespace-pre-line text-sm text-slate-200"><%= order.notes %></p>
+            </div>
+            <% } %>
+
+            <% if (order.attachment_urls && order.attachment_urls.length) { %>
+            <div class="mt-3 flex flex-wrap gap-2">
+              <% order.attachment_urls.forEach((url) => { %>
+              <a href="<%= url %>" target="_blank" rel="noreferrer" class="block h-16 w-16 overflow-hidden rounded-lg border border-slate-600">
+                <img src="<%= url %>" alt="Anexo" class="h-full w-full object-cover" />
+              </a>
+              <% }) %>
+            </div>
+            <% } %>
+
+            <div class="mt-4 flex flex-wrap items-center gap-2 border-t border-slate-700/50 pt-4">
+              <% ['pending', 'contacted', 'done'].filter((s) => s !== order.status).forEach((s) => { %>
+              <form action="/admin/orders/<%= order.id %>/status" method="POST">
+                <input type="hidden" name="filter" value="<%= orderStatusFilter %>" />
+                <input type="hidden" name="status" value="<%= s %>" />
+                <button class="btn btn-xs rounded-full border-0 bg-slate-700 text-slate-200 hover:bg-slate-600">
+                  <%= s === 'pending' ? 'Marcar pendente' : s === 'contacted' ? 'Marcar contactado' : 'Marcar concluído' %>
+                </button>
+              </form>
+              <% }) %>
+              <form action="/admin/orders/<%= order.id %>/delete" method="POST" class="ml-auto">
+                <input type="hidden" name="filter" value="<%= orderStatusFilter %>" />
+                <button
+                  class="btn btn-xs rounded-full border-0 bg-red-700 text-white hover:bg-red-600"
+                  onclick="return confirm('Apagar este pedido?');"
+                >
+                  Apagar
+                </button>
+              </form>
+            </div>
+          </div>
+          <% }) %>
+        </div>
+        <% } %>
+      </section>
+
+      <% } else { %>
 
       <section class="mb-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
         <div class="rounded-xl border border-slate-700/50 bg-slate-800/40 p-5 backdrop-blur">
@@ -240,9 +461,14 @@
       </div>
 
       <section class="mt-8 rounded-2xl border border-slate-700/50 bg-slate-800/40 p-6 backdrop-blur">
-        <div class="mb-6">
-          <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-400">Restaurantes</p>
-          <h2 class="mt-2 text-3xl font-black tracking-tight text-white">Dashboard por restaurante</h2>
+        <div class="mb-6 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-400">Restaurantes</p>
+            <h2 class="mt-2 text-3xl font-black tracking-tight text-white">Dashboard por restaurante</h2>
+          </div>
+          <div class="rounded-xl border border-slate-700/50 bg-slate-900/60 px-4 py-3 text-xs text-slate-300 backdrop-blur">
+            <span class="text-slate-500">Link:</span> <span class="font-mono text-teal-300"><%= baseUrl %>/go/slug</span>
+          </div>
         </div>
 
         <% if (!links.length) { %>
@@ -632,6 +858,8 @@
           '#3b82f6'
         );
       </script>
+
+      <% } %>
       <% } %>
     </div>
   </body>

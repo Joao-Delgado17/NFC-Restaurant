@@ -56,7 +56,10 @@ const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_KEY;
 const APP_BASE_URL = process.env.APP_BASE_URL || '';
 const APP_TIMEZONE = process.env.APP_TIMEZONE || 'Europe/Lisbon';
+const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '';
+const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || '';
 const HISTORY_DAYS = 14;
+const ORDER_STATUSES = ['pending', 'contacted', 'done'];
 
 if (!SUPABASE_URL || !SUPABASE_KEY || !ADMIN_PASSWORD) {
   console.warn(
@@ -230,6 +233,87 @@ async function uploadOrderAttachments(files) {
   }
 
   return urls;
+}
+
+const TELEGRAM_MAX_ATTEMPTS = 3;
+const TELEGRAM_RETRY_DELAY_MS = 800;
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function sendTelegramNotification(text) {
+  if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
+    return;
+  }
+
+  for (let attempt = 1; attempt <= TELEGRAM_MAX_ATTEMPTS; attempt += 1) {
+    try {
+      const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: TELEGRAM_CHAT_ID,
+          text,
+          parse_mode: 'HTML',
+          disable_web_page_preview: true
+        })
+      });
+
+      if (!response.ok) {
+        console.error('Telegram notification failed:', response.status, await response.text());
+        return;
+      }
+
+      return;
+    } catch (error) {
+      const isLastAttempt = attempt === TELEGRAM_MAX_ATTEMPTS;
+      console.error(`Telegram notification error (attempt ${attempt}/${TELEGRAM_MAX_ATTEMPTS}):`, error.message);
+
+      if (!isLastAttempt) {
+        await sleep(TELEGRAM_RETRY_DELAY_MS * attempt);
+      }
+    }
+  }
+}
+
+function escapeHtml(value = '') {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+function buildOrderNotificationText(order, baseUrl) {
+  const quantityLabel = order.quantity === 1 ? '1 cartão' : `${order.quantity} cartões`;
+
+  const lines = [
+    `🆕 <b>Novo pedido — ${escapeHtml(order.full_name)}</b>`,
+    '',
+    `📦 ${quantityLabel}`,
+    `📧 ${escapeHtml(order.email)}`
+  ];
+
+  if (order.phone) lines.push(`📱 ${escapeHtml(order.phone)}`);
+
+  const companyRole = [order.company, order.role].filter(Boolean).join(' — ');
+  if (companyRole) lines.push(`🏢 ${escapeHtml(companyRole)}`);
+
+  if (order.social_link) lines.push(`🔗 ${escapeHtml(order.social_link)}`);
+
+  if (order.attachmentCount) {
+    lines.push(`📎 ${order.attachmentCount} foto${order.attachmentCount === 1 ? '' : 's'} anexada${order.attachmentCount === 1 ? '' : 's'}`);
+  }
+
+  if (order.notes) {
+    lines.push('', `📝 ${escapeHtml(order.notes)}`);
+  }
+
+  if (baseUrl) {
+    lines.push('', `👉 <a href="${escapeHtml(baseUrl)}/admin?view=orders">Ver no painel</a>`);
+  }
+
+  return lines.join('\n');
 }
 
 function getBaseUrl(req) {
@@ -435,6 +519,67 @@ async function loadAdminData(selectedLinkId, selectedCardId) {
   };
 }
 
+function buildOrderCounts(orders) {
+  const sevenDaysAgoKey = formatDateKey(getDateDaysAgo(6));
+  const pendingOrders = orders.filter((order) => order.status === 'pending');
+
+  return {
+    all: orders.length,
+    pending: pendingOrders.length,
+    contacted: orders.filter((order) => order.status === 'contacted').length,
+    done: orders.filter((order) => order.status === 'done').length,
+    pendingCardsQuantity: pendingOrders.reduce((sum, order) => sum + (Number(order.quantity) || 0), 0),
+    last7Days: orders.filter((order) => formatDateKey(new Date(order.created_at)) >= sevenDaysAgoKey).length
+  };
+}
+
+async function loadOrdersData(statusFilter) {
+  const { data: allOrders, error } = await supabase
+    .from('orders')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    throw error;
+  }
+
+  const orders = allOrders || [];
+  const orderCounts = buildOrderCounts(orders);
+
+  const filteredOrders =
+    statusFilter && ORDER_STATUSES.includes(statusFilter)
+      ? orders.filter((order) => order.status === statusFilter)
+      : orders;
+
+  return { orders: filteredOrders, orderCounts };
+}
+
+async function loadOrderCounts() {
+  const { data, error } = await supabase.from('orders').select('status, quantity, created_at');
+
+  if (error) {
+    throw error;
+  }
+
+  return buildOrderCounts(data || []);
+}
+
+function normalizeOrderFilter(value) {
+  return ORDER_STATUSES.includes(value) || value === 'all' ? value : 'pending';
+}
+
+function normalizeAdminView(value) {
+  return value === 'orders' ? 'orders' : 'restaurants';
+}
+
+function emptyOrdersData() {
+  return { orders: [], orderCounts: emptyOrderCounts() };
+}
+
+function emptyOrderCounts() {
+  return { all: 0, pending: 0, contacted: 0, done: 0, pendingCardsQuantity: 0, last7Days: 0 };
+}
+
 function emptyOverview() {
   return {
     totalLinks: 0,
@@ -448,6 +593,7 @@ function emptyOverview() {
 function renderAdmin(req, res, data) {
   return res.render('admin', {
     authenticated: data.authenticated,
+    activeView: normalizeAdminView(data.activeView),
     error: data.error || null,
     success: data.success || null,
     links: data.links || [],
@@ -457,7 +603,11 @@ function renderAdmin(req, res, data) {
     selectedCard: data.selectedCard || null,
     selectedLinkHistory: data.selectedLinkHistory || { labels: [], values: [] },
     selectedCardHistory: data.selectedCardHistory || { labels: [], values: [] },
+    orders: data.orders || [],
+    orderCounts: data.orderCounts || emptyOrderCounts(),
+    orderStatusFilter: data.orderStatusFilter || 'pending',
     baseUrl: getBaseUrl(req),
+    appTimezone: APP_TIMEZONE,
     editingId: data.editingId || null,
     editingCardId: data.editingCardId || null,
     formData: data.formData || {},
@@ -466,12 +616,31 @@ function renderAdmin(req, res, data) {
 }
 
 async function renderAdminWithData(req, res, options) {
-  const adminData = await loadAdminData(options.selectedLinkId || null, options.selectedCardId || null).catch(
-    () => null
-  );
+  const activeView = normalizeAdminView(options.activeView);
+  const orderStatusFilter = options.orderStatusFilter || 'pending';
+
+  if (activeView === 'orders') {
+    const ordersData = await loadOrdersData(orderStatusFilter).catch(() => null);
+
+    return renderAdmin(req, res, {
+      authenticated: true,
+      activeView,
+      error: options.error || null,
+      success: options.success || null,
+      orders: ordersData?.orders || [],
+      orderCounts: ordersData?.orderCounts || emptyOrderCounts(),
+      orderStatusFilter
+    });
+  }
+
+  const [adminData, orderCounts] = await Promise.all([
+    loadAdminData(options.selectedLinkId || null, options.selectedCardId || null).catch(() => null),
+    loadOrderCounts().catch(() => emptyOrderCounts())
+  ]);
 
   return renderAdmin(req, res, {
     authenticated: true,
+    activeView,
     error: options.error || null,
     success: options.success || null,
     links: adminData?.links || [],
@@ -481,6 +650,7 @@ async function renderAdminWithData(req, res, options) {
     selectedCard: adminData?.selectedCard || null,
     selectedLinkHistory: adminData?.selectedLinkHistory || { labels: [], values: [] },
     selectedCardHistory: adminData?.selectedCardHistory || { labels: [], values: [] },
+    orderCounts,
     editingId: options.editingId || null,
     editingCardId: options.editingCardId || null,
     formData: options.formData || {},
@@ -589,6 +759,13 @@ app.post('/pessoal/encomendas', (req, res) => {
         throw error;
       }
 
+      sendTelegramNotification(
+        buildOrderNotificationText(
+          { full_name, email, phone, company, role, social_link, notes, quantity, attachmentCount: attachment_urls.length },
+          getBaseUrl(req)
+        )
+      );
+
       return res.render('pessoal', {
         error: null,
         success: 'Pedido enviado! Vamos entrar em contacto em breve para combinar os detalhes.',
@@ -669,16 +846,39 @@ app.get('/admin', async (req, res) => {
     });
   }
 
+  const activeView = normalizeAdminView(req.query.view);
+  const orderStatusFilter = normalizeOrderFilter(req.query.orders);
+
   try {
-    const adminData = await loadAdminData(req.query.link || null, req.query.card || null);
+    if (activeView === 'orders') {
+      const ordersData = await loadOrdersData(orderStatusFilter);
+
+      return renderAdmin(req, res, {
+        authenticated: true,
+        activeView,
+        orderStatusFilter,
+        ...ordersData
+      });
+    }
+
+    const [adminData, orderCounts] = await Promise.all([
+      loadAdminData(req.query.link || null, req.query.card || null),
+      loadOrderCounts()
+    ]);
+
     return renderAdmin(req, res, {
       authenticated: true,
-      ...adminData
+      activeView,
+      orderStatusFilter,
+      ...adminData,
+      orderCounts
     });
   } catch (error) {
     console.error('Admin load error:', error);
     return renderAdmin(req, res, {
       authenticated: true,
+      activeView,
+      orderStatusFilter,
       error: 'Nao foi possivel carregar os dados.'
     });
   }
@@ -940,6 +1140,58 @@ app.post('/admin/cards/:id/delete', requireAdmin, async (req, res) => {
     return renderAdminWithData(req, res.status(400), {
       selectedLinkId: linkId || null,
       error: error.message || 'Nao foi possivel apagar o cartao.'
+    });
+  }
+});
+
+app.post('/admin/orders/:id/status', requireAdmin, async (req, res) => {
+  const orderId = req.params.id;
+  const status = normalizeInput(req.body.status || '');
+  const filter = normalizeOrderFilter(req.body.filter);
+
+  if (!ORDER_STATUSES.includes(status)) {
+    return renderAdminWithData(req, res.status(400), {
+      activeView: 'orders',
+      orderStatusFilter: filter,
+      error: 'Estado de pedido invalido.'
+    });
+  }
+
+  try {
+    const { error } = await supabase.from('orders').update({ status }).eq('id', orderId);
+
+    if (error) {
+      throw error;
+    }
+
+    return res.redirect(`/admin?view=orders&orders=${filter}`);
+  } catch (error) {
+    console.error('Update order status error:', error);
+    return renderAdminWithData(req, res.status(400), {
+      activeView: 'orders',
+      orderStatusFilter: filter,
+      error: 'Nao foi possivel atualizar o pedido.'
+    });
+  }
+});
+
+app.post('/admin/orders/:id/delete', requireAdmin, async (req, res) => {
+  const filter = normalizeOrderFilter(req.body.filter);
+
+  try {
+    const { error } = await supabase.from('orders').delete().eq('id', req.params.id);
+
+    if (error) {
+      throw error;
+    }
+
+    return res.redirect(`/admin?view=orders&orders=${filter}`);
+  } catch (error) {
+    console.error('Delete order error:', error);
+    return renderAdminWithData(req, res.status(400), {
+      activeView: 'orders',
+      orderStatusFilter: filter,
+      error: 'Nao foi possivel apagar o pedido.'
     });
   }
 });

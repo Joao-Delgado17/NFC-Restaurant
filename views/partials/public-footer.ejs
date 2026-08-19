@@ -1,17 +1,69 @@
-<footer class="relative overflow-hidden py-10 <%= (typeof glowFromTop !== 'undefined' && glowFromTop) ? '' : 'border-t border-white/10' %>">
-  <% if (typeof glowFromTop !== 'undefined' && glowFromTop) { %>
-    <div
-      id="footer-glow"
-      class="hidden pointer-events-none absolute inset-x-0 top-0 left-1/2 -z-10 h-32 w-screen -translate-x-1/2"
-      style="background: linear-gradient(to bottom, rgba(255, 255, 255, 0.7), transparent 85%);"
-    ></div>
-  <% } %>
-  <div class="mx-auto flex max-w-6xl flex-col gap-4 px-4 text-xs text-neutral-400 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
-    <p>&copy; <%= new Date().getFullYear() %> Quick Menu. Todos os direitos reservados.</p>
-    <div class="flex gap-6 uppercase tracking-[0.2em]">
-      <a href="https://www.instagram.com/quickmenu._/" target="_blank" rel="noopener" class="transition hover:text-teal-400">Instagram</a>
-      <a href="https://www.tiktok.com/@quickmenu._" target="_blank" rel="noopener" class="transition hover:text-teal-400">TikTok</a>
-      <a href="https://www.facebook.com/profile.php?id=61590106303499" target="_blank" rel="noopener" class="transition hover:text-teal-400">Facebook</a>
+<footer class="relative bg-[#f5f6f8] py-10">
+  <div
+    class="pointer-events-none absolute inset-x-0 left-0 w-full overflow-hidden"
+    style="line-height: 0; bottom: calc(100% - 32px); height: 130px;"
+  >
+    <svg viewBox="0 0 1440 200" preserveAspectRatio="none" style="display: block; width: 100%; height: 130px; overflow: hidden;">
+      <defs>
+        <!-- Gradiente de cor real (sempre opaco), nao um branco a ganhar opacidade
+             por cima do fundo escuro — isso e o que dava a faixa cinzenta "suja" no
+             meio da transicao. Aqui cada stop e uma cor solida propria, a acompanhar
+             a familia de tons do fundo escuro ate ao branco exato do footer. -->
+        <!-- userSpaceOnUse (nao objectBoundingBox): assim a cor e fixa a altura real
+             do SVG (0 a 200), nao a caixa do proprio caminho — os picos da onda (que
+             so chegam a y~20-36, nunca a y=0) deixam de tocar o tom mais escuro do
+             gradiente, o que tirava aquele preto forte na ponta das curvas. -->
+        <linearGradient id="footerFade" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="200">
+          <stop offset="0%" stop-color="#12141a" />
+          <stop offset="10%" stop-color="#1f2530" />
+          <stop offset="20%" stop-color="#2d3440" />
+          <stop offset="30%" stop-color="#3d4553" />
+          <stop offset="40%" stop-color="#525a68" />
+          <stop offset="50%" stop-color="#6b7380" />
+          <stop offset="60%" stop-color="#868d97" />
+          <stop offset="70%" stop-color="#a3a8b0" />
+          <stop offset="80%" stop-color="#c1c5cb" />
+          <stop offset="90%" stop-color="#e0e2e5" />
+          <stop offset="100%" stop-color="#f5f6f8" />
+        </linearGradient>
+        <!-- Sombra suave para a onda da frente "descolar" ligeiramente da onda de
+             tras, reforcando a sensacao de camadas. -->
+        <filter id="waveShadow" x="-10%" y="-30%" width="120%" height="160%">
+          <feDropShadow dx="0" dy="9" stdDeviation="9" flood-color="#000000" flood-opacity="0.8" />
+        </filter>
+        <!-- Camada "back": mesmo 0% que a "footerFade" (#12141a) — tem de encaixar
+             sem costura no fundo escuro plano onde os picos tocam y=0. A partir dai
+             clareia bem mais depressa que a onda da frente, para se ler como uma
+             segunda camada mais esbatida sem criar um degrau logo na ponta. -->
+        <linearGradient id="footerFadeBack" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="200">
+          <stop offset="0%" stop-color="#12141a" />
+          <stop offset="10%" stop-color="#232935" />
+          <stop offset="20%" stop-color="#3d4553" />
+          <stop offset="30%" stop-color="#5b6472" />
+          <stop offset="40%" stop-color="#7c838d" />
+          <stop offset="55%" stop-color="#9ba1a9" />
+          <stop offset="70%" stop-color="#c3c7cc" />
+          <stop offset="85%" stop-color="#e3e5e8" />
+          <stop offset="100%" stop-color="#f5f6f8" />
+        </linearGradient>
+      </defs>
+      <path
+        fill="url(#footerFadeBack)"
+        d="M0,100 C25.0,102.0 93.3,125.0 150,112 C206.7,99.0 261.7,21.0 340,22 C418.3,23.0 526.7,117.0 620,118 C713.3,119.0 811.7,42.0 900,28 C988.3,14.0 1060.0,21.0 1150,34 C1240.0,47.0 1391.7,94.0 1440,106 L1440,200 L0,200 Z"
+      />
+      <path
+        fill="url(#footerFade)"
+        filter="url(#waveShadow)"
+        d="M0,61 C25.0,52.0 93.3,-1.0 150,7 C206.7,15.0 261.7,97.7 340,109 C418.3,120.3 526.7,82.0 620,75 C713.3,68.0 811.7,77.0 900,67 C988.3,57.0 1060.0,16.5 1150,15 C1240.0,13.5 1391.7,50.8 1440,58 L1440,200 L0,200 Z"
+      />
+    </svg>
+  </div>
+  <div class="relative mx-auto flex max-w-6xl flex-col gap-4 px-4 text-xs text-neutral-600 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
+    <p class="font-medium">&copy; <%= new Date().getFullYear() %> Quick Menu. Todos os direitos reservados.</p>
+    <div class="flex gap-6 font-semibold uppercase tracking-[0.2em] text-neutral-700">
+      <a href="https://www.instagram.com/quickmenu._/" target="_blank" rel="noopener" class="transition hover:text-teal-600">Instagram</a>
+      <a href="https://www.tiktok.com/@quickmenu._" target="_blank" rel="noopener" class="transition hover:text-teal-600">TikTok</a>
+      <a href="https://www.facebook.com/profile.php?id=61590106303499" target="_blank" rel="noopener" class="transition hover:text-teal-600">Facebook</a>
     </div>
   </div>
 </footer>
